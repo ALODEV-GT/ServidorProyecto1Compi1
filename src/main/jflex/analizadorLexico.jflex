@@ -27,7 +27,7 @@ import midik.cup.sym;
 //Palabras reservadas
 IMPORT = "import"
 PUBLIC = "public"
-PRIVATED = "privated"
+PRIVATED = "private"
 PROTECTED = "protected"
 CLASS = "class"
 INT = "int"
