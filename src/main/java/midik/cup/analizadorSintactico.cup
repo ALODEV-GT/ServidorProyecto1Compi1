@@ -1,9 +1,18 @@
 package midik.cup;
 import java_cup.runtime.Symbol;
+import java.util.ArrayList;
+import midik.tablaSimbolos.Termino;
+import midik.tablaSimbolos.Visibilidad;
+import midik.tablaSimbolos.Roles;
 
 parser code
 {:
-    
+    private ArrayList<Termino> tablaSimbolos = new ArrayList<>();
+
+    public ArrayList<Termino> getTablaSimbolos(){
+        return this.tablaSimbolos;
+    }
+
     public void syntax_error(Symbol s){
         System.out.println("Error sintactico: " + s.value.toString() + " Linea:" + s.right + " Columna:" + s.left);
     }
@@ -14,15 +23,15 @@ parser code
 
 :};
 
-terminal String IMPORT,PUBLIC,PRIVATED,PROTECTED,CLASS,INT,BOOLEAN,STRING,DOUBLE,CHAR,
+terminal String IMPORT,PUBLIC,PRIVATE,PROTECTED,CLASS,INT,BOOLEAN,STRING,DOUBLE,CHAR,
             IF,ELSE,FOR,WHILE,DO,SWITCH,FINAL,BREAK,RETURN,P_COMA,PUNTO,COMA,LLAVE_A,
             LLAVE_C,PARENTESIS_A,PARENTESIS_C,MAS,MENOS,POR,DIVISION,IGUAL,MAYOR_IGUAL,
             MENOR_IGUAL,ASIGNACION,MAYOR_QUE,MENOR_QUE,DIFERENTE,AND,OR,NOT,INCREMENTO,
             DECREMENTO,ID,ENTERO,DECIMAL,CADENA,TRUE,FALSE,CARACTER,NULL,CASE,DEFAULT,DOS_PUNTOS,VOID,NEW,THIS;
 
 non terminal String s1,s2,s3,s4,s5,s6; //GRAMATICA: IMPORT
-non terminal String s7, s8, s9, s10, s11, valor, exp, s115; //GRAMATICA: DECLARACION DE ATRIBUTOS
-non terminal String s12,s13; //GRAMATICA: DECLARACION DE VARIABLES
+non terminal Termino s7, s8, s9, s10, s11, valor, exp, s115; //GRAMATICA: DECLARACION DE ATRIBUTOS
+non terminal Termino s12,s13; //GRAMATICA: DECLARACION DE VARIABLES
 non terminal String s14,s15,s16,parametro; //GRAMATICA: PARAMETROS
 non terminal String s105,s106,s107; //GRAMATICA: RETURN
 non terminal String s108,s109,s110,s111,s112; //GRAMATICA: LLAMADA A METODOS/FUNCIONES
@@ -34,8 +43,9 @@ non terminal String s51,s52,s53,s54,s55,s56,s57,s58,s59,s60,s61; //GRAMATICA: FO
 non terminal String s62,s63,s64,s65,s66,s67,s68,s69,s70,s71,s72,s73,s74,s75,s76; //GRAMATICA: SWITCH
 non terminal String s81,s82,s83,s84,s85,s86; //GRAMATICA: FUNCIONES Y METODOS
 non terminal String s89,s90,s91,s92,s93,s94; //GRAMATICA: CONSTRUCTOR
-non terminal String s95,s96,s97,s98,s99; //GRAMATICA: CLASE
-non terminal String s101,s104;
+non terminal Termino s95,s96,s97,s98,s99; //GRAMATICA: CLASE
+non terminal String s104;
+non terminal Termino s101;
 
 non terminal String s0; //Comun
 
@@ -54,38 +64,114 @@ s0::= s1 s0
 //FIN
 
 //GRAMATICA: IMPORT -->INICIO
-s1::= IMPORT:v1 s2:v2               {: :}    
-| error                             {:System.out.println("Se esperaba import o la definicion de una clase.");:}           
+s1::= IMPORT:v1 s2:v2
+| error                             {:System.out.println("Se esperaba import o la definicion de una clase.");:}
 ;
-s2::= ID:v1 s3:v2                   {:RESULT=v1 + v2;:}
+s2::= ID:v1 s3:v2
 | error                             {:System.out.println("Se esperaba el nombre del paquete");:}
 ;
-s3::= PUNTO:v1 s4:v2                {:RESULT=v1 + v2;:}
+s3::= PUNTO:v1 s4:v2
 | error                             {:System.out.println("Se esperaba un punto, punto coma, o el import es muy corto Ej: import pack;");:}
 ;
-s4::= POR:v1 s5:v2                  {:RESULT = v1 + v2;:}
-| ID:v1 s6:v2                       {:RESULT = v1 + v2;:}
+s4::= POR:v1 s5:v2
+| ID:v1 s6:v2
 | error                             {:System.out.println("Se esperaba * o id");:}
 ;
-s5::= P_COMA:v1                     {:RESULT=v1;:}
+s5::= P_COMA:v1
 | error                             {:System.out.println("Se esperaba un punto y coma");:}
-;    
-s6::= P_COMA:v1                     {:RESULT=v1;:}
-| s3:v1                             {:RESULT=v1;:}
+;
+s6::= P_COMA:v1
+| s3:v1
 ;
 //GRAMATICA: IMPORT -->FIN
 
+
+
 //GRAMATICA: DECLARACION/ASIGNACION DE VARIABLES -->INICIO
-s12::= FINAL:v1 s9:v2                         {:RESULT=v1+" "+v2;:}
-|s9:v1                                              {:RESULT=v1;:}
-|THIS PUNTO ID:v1 s13:v2                                      {:RESULT=v1+" "+v2;:}
-|ID:v1 s13:v2                                       {:RESULT=v1+" "+v2;:}
+s12::= FINAL s9:v1                                  {:v1.setRol(Roles.VARIABLE); tablaSimbolos.add(v1);:}
+|s9:v1                                              {:v1.setRol(Roles.VARIABLE); tablaSimbolos.add(v1);:}
+|THIS PUNTO ID s13                      
+|ID s13                                       
 ;
-s13::= ASIGNACION:v1 exp:v2 P_COMA:v3               {:RESULT=v1 + " " + v2 + " " + v3;:}
-| ASIGNACION ID P_COMA
+s13::= ASIGNACION exp P_COMA                    
+| ASIGNACION ID P_COMA                           
+| ASIGNACION NEW ID PARENTESIS_A argumento PARENTESIS_C P_COMA
 ;
 
 //GRAMATICA: DECLARACION/ASIGNACION DE VARIABLES -->FIN
+
+//GRAMATICA: DECLARACION DE ATRIBUTOS -->INICIO
+s7::= PUBLIC:v1 s101:v2             {:v2.setVisibilidad(Visibilidad.PUBLIC); v2.setRol(Roles.VARIABLE); tablaSimbolos.add(v2);:}
+| PRIVATE:v1 s101:v2               {:v2.setVisibilidad(Visibilidad.PRIVATE); v2.setRol(Roles.VARIABLE); tablaSimbolos.add(v2);:}
+| PROTECTED:v1 s101:v2              {:v2.setVisibilidad(Visibilidad.PROTECTED); v2.setRol(Roles.VARIABLE); tablaSimbolos.add(v2);:}
+| s101:v1                           {:  if(v1!=null){
+                                            v1.setVisibilidad(Visibilidad.DEFAULT); v1.setRol(Roles.VARIABLE); tablaSimbolos.add(v1);
+                                        }
+                                    :}
+;
+s101::= s8:v1                       {:RESULT=v1;:}
+| ID s89
+;
+s8::= FINAL s9:v1                   {:RESULT=v1;:}
+| s9:v1                             {:RESULT=v1;:}
+;
+s9::= INT:v1 s10:v2                 {:v2.setTipo(v1); RESULT=v2;:}
+|BOOLEAN:v1 s10:v2                  {:v2.setTipo(v1); RESULT=v2;:}
+|STRING:v1 s10:v2                   {:v2.setTipo(v1); RESULT=v2;:}
+|CHAR:v1 s10:v2                     {:v2.setTipo(v1); RESULT=v2;:}
+|DOUBLE:v1 s10:v2                   {:v2.setTipo(v1); RESULT=v2;:}
+|ID:v1 s10:v2                       {:v2.setTipo(v1); RESULT=v2;:}
+|VOID ID s81
+;
+s10::= ID:v1 s104                                {:Termino term = new Termino(); term.setNombre(v1); RESULT=term;:}
+| error                                             {:System.out.println("Se esperaba un identificador");:}
+;
+s104::= s11:v1                                      
+|s81
+;
+s11::= s115:v1                                      
+| ASIGNACION exp s115:v1                            
+| ASIGNACION NEW ID PARENTESIS_A argumento PARENTESIS_C P_COMA:v1    
+| error                                             {:System.out.println("Se esperaba punto y coma, signo igual o (");:}
+;
+s115::= COMA:v1 s10:v2              
+| P_COMA:v1                         
+;
+exp ::= exp:v1 MAS:v2 exp:v3        
+| exp:v1 MENOS:v2 exp:v3            
+| exp:v1 POR:v2 exp:v3              
+| exp:v1 DIVISION:v2 exp:v3         
+| PARENTESIS_A:v1 exp:v2 PARENTESIS_C:v3     
+| valor:v1                                   
+| error                                             {:System.out.println("Se esperaba un valor");:}
+;
+valor::= CADENA:v1                  
+|TRUE:v1                            
+|FALSE:v1                           
+|CARACTER:v1                        
+|NULL:v1                            
+|ENTERO:v1                          
+|DECIMAL:v1                         
+;
+//GRAMATICA: DECLARACION DE ATRIBUTOS -->FIN
+
+//GRAMATICA: METODOS Y FUNCIONES -->INICIO
+s81::= PARENTESIS_A s82
+;
+s82::= parametro s83
+|error                                           {:System.out.println("Se esperaban los parametros o ) ");:}
+;
+s83::= PARENTESIS_C s84
+;
+s84::= LLAVE_A s85
+|error                                           {:System.out.println("Se esperaba {");:}
+;
+s85::= sentences s86
+|error                                           {:System.out.println("Se esperaban las sentencias o } ");:}
+;
+s86::= LLAVE_C
+;
+//GRAMATICA: METODOS Y FUNCIONES -->FIN
 
 //GRAMATICA: PARAMETROS -->INICIO
 parametro::= s14
@@ -106,12 +192,14 @@ s16::= COMA s14
 ;
 //GRAMATICA: PARAMETROS -->FIN
 
+
+
 //GRAMATICA: RETURN -->INICIO
 s105::= RETURN s106
 ;
 s106::= valor s107
 | ID s107
-| error {:System.out.println("Se esperaba un valor y punto y coma");:} 
+| error {:System.out.println("Se esperaba un valor y punto y coma");:}
 ;
 s107::= P_COMA
 ;
@@ -121,15 +209,15 @@ s107::= P_COMA
 s108::= ID s109
 | THIS PUNTO ID s109
 ;
-s109::= PARENTESIS_A s110 
+s109::= PARENTESIS_A s110
 ;
 s110::= argumento s111
-| error {:System.out.println("Se esperaban los argumentos o )");:} 
+| error {:System.out.println("Se esperaban los argumentos o )");:}
 ;
 s111::= PARENTESIS_C s112
 ;
 s112::= P_COMA
-| error {:System.out.println("Se esperaba punto y coma ");:} 
+| error {:System.out.println("Se esperaba punto y coma ");:}
 ;
 //GRAMATICA: LLAMADA A A METODOS/FUNCIONES --> FIN
 
@@ -137,11 +225,11 @@ s112::= P_COMA
 argumento::= s113
 |
 ;
-s113::= ID:v1 s114:v2                               {:RESULT=v1 + " " + v2;:}
-| exp s114
+s113::= ID:v1 s114:v2       {:RESULT=v1+" "+v2;:}
+| exp:v1 s114:v2            {:RESULT=v1+" "+v2;:}
 ;
-s114::= COMA s113
-|
+s114::= COMA:v1 s113:v2     {:RESULT=v1+" "+v2;:}
+|                           {:RESULT="";:}
 |error                                            {:System.out.println("Se esperaba argumentos o )");:}
 ;
 //GRAMATICA: ARGUMENTOS -->FIN
@@ -150,10 +238,10 @@ s114::= COMA s113
 s17::=IF:v1 s18:v2
 ;
 s18::=PARENTESIS_A:v1 s19
-| error {:System.out.println("Se esperaba ( ");:} 
+| error {:System.out.println("Se esperaba ( ");:}
 ;
 s19::= condicion s20
-| error {:System.out.println("Se esperaba una condicion valida");:} 
+| error {:System.out.println("Se esperaba una condicion valida");:}
 ;
 condicion::= NOT s24 s25
 | s24 s25
@@ -165,7 +253,7 @@ condicion::= NOT s24 s25
 
 s25::= AND condicion
 | OR condicion
-| 
+|
 ;
 s28::= s29 opcompa s29
 | PARENTESIS_A s28 PARENTESIS_C
@@ -186,10 +274,10 @@ s24::= TRUE
 | PARENTESIS_A condicion PARENTESIS_C
 ;
 s20::=PARENTESIS_C s21
-| error {:System.out.println("Se esperaba el ) ");:} 
+| error {:System.out.println("Se esperaba el ) ");:}
 ;
 s21::= LLAVE_A s22
-| error {:System.out.println("Se esperaba { ");:} 
+| error {:System.out.println("Se esperaba { ");:}
 ;
 s22::=sentences s23
 | error {:System.out.println("Se esperaban las sentencias o } ");:}
@@ -206,25 +294,25 @@ sentences::= s17 sentences
 ;
 s23::= LLAVE_C s31
 ;
-opcompa::=DIFERENTE:v1             {:RESULT=v1;:}
- | MAYOR_IGUAL:v1          {:RESULT=v1;:}
- | MAYOR_QUE:v1            {:RESULT=v1;:}
- | MENOR_IGUAL:v1          {:RESULT=v1;:}
- | MENOR_QUE:v1            {:RESULT=v1;:}
- | IGUAL:v1            {:RESULT=v1;:}
+opcompa::=DIFERENTE:v1
+ | MAYOR_IGUAL:v1
+ | MAYOR_QUE:v1
+ | MENOR_IGUAL:v1
+ | MENOR_QUE:v1
+ | IGUAL:v1
 ;
-s29 ::= s29:v1 MAS s29:v2                          {:RESULT = v1 + "+" + v2;:}
-| s29:v1 MENOS s29:v2                               {:RESULT = v1 + "-" + v2;:}
-| s29:v1 POR s29:v2                                 {:RESULT = v1 + "*" + v2;:}
-| s29:v1 DIVISION s29:v2                            {:RESULT = v1 + "/" + v2;:}
-| PARENTESIS_A:v1 s29:v2 PARENTESIS_C:v3             {:RESULT = v1+v2+v3;:}
-| s30:v1                                            {:RESULT = v1;:}
+s29 ::= s29:v1 MAS s29:v2
+| s29:v1 MENOS s29:v2
+| s29:v1 POR s29:v2
+| s29:v1 DIVISION s29:v2
+| PARENTESIS_A:v1 s29:v2 PARENTESIS_C:v3
+| s30:v1
 ;
-s30::= CADENA:v1                                   {:RESULT=v1;:}
-|CARACTER :v1                                       {:RESULT=v1;:}
-|NULL:v1                                            {:RESULT=v1;:}
-|ENTERO:v1                                          {:RESULT=v1;:}
-|DECIMAL:v1                                         {:RESULT=v1;:}
+s30::= CADENA:v1
+|CARACTER :v1
+|NULL:v1
+|ENTERO:v1
+|DECIMAL:v1
 ;
 s31::= ELSE s32
 |
@@ -243,16 +331,16 @@ s34::= LLAVE_C
 s35::=WHILE:v1 s36:v2
 ;
 s36::=PARENTESIS_A:v1 s37
-| error {:System.out.println("Se esperaba ( ");:} 
+| error {:System.out.println("Se esperaba ( ");:}
 ;
 s37::= condicion s38
-| error {:System.out.println("Se esperaba una condicion valida");:} 
+| error {:System.out.println("Se esperaba una condicion valida");:}
 ;
 s38::=PARENTESIS_C s39
-| error {:System.out.println("Se esperaba ) ");:} 
+| error {:System.out.println("Se esperaba ) ");:}
 ;
 s39::= LLAVE_A s40
-| error {:System.out.println("Se esperaba { ");:} 
+| error {:System.out.println("Se esperaba { ");:}
 ;
 s40::=sentences s41
 | error {:System.out.println("Se esperaban las sentencias o } ");:}
@@ -279,13 +367,13 @@ s47::= PARENTESIS_A s48
 | error {:System.out.println("Se esperaba ( ");:}
 ;
 s48::= condicion s49
-| error {:System.out.println("Se esperaba una condicion valida");:} 
+| error {:System.out.println("Se esperaba una condicion valida");:}
 ;
 s49::= PARENTESIS_C s50
-| error {:System.out.println("Se esperaba ) ");:} 
+| error {:System.out.println("Se esperaba ) ");:}
 ;
 s50::= P_COMA
-| error {:System.out.println("Se esperaba el ; ");:} 
+| error {:System.out.println("Se esperaba el ; ");:}
 ;
 //GRAMATICA: DO WHILE -->FIN
 
@@ -309,26 +397,26 @@ s56::= sentences s57
 ;
 s57::= LLAVE_C
 ;
-s58::= s12:v1 ID:v2 opcompa:v3 s59:v4 P_COMA:v5 s60:v6      {::}
+s58::= s12:v1 ID:v2 opcompa:v3 s59:v4 P_COMA:v5 s60:v6
 ;
-s60::= ID:v1 INCREMENTO:v2        {:RESULT=v1+" "+v2;:}
-| ID:v1 DECREMENTO:v2                 {:RESULT=v1+" "+v2;:}
-| ID:v1 ASIGNACION:v2 s59:v3                            {:RESULT=v1+" "+v2+" "+v3;:}
+s60::= ID:v1 INCREMENTO:v2
+| ID:v1 DECREMENTO:v2
+| ID:v1 ASIGNACION:v2 s59:v3
 ;
-s59 ::= s59:v1 MAS s59:v2                           {:RESULT = v1 + "+" + v2;:}
-| s59:v1 MENOS s59:v2                               {:RESULT = v1 + "/" + v2;:}
-| PARENTESIS_A:v1 s59:v2 PARENTESIS_C:v3            {:RESULT = v1+v2+v3;:}
-| s61:v1                                          {:RESULT = v1;:}
+s59 ::= s59:v1 MAS s59:v2
+| s59:v1 MENOS s59:v2
+| PARENTESIS_A:v1 s59:v2 PARENTESIS_C:v3
+| s61:v1
 | error                                             {:System.out.println("Se esperaba un valor");:}
 ;
-s61::= ID:v1                                  {:RESULT=v1;:}
-|ENTERO:v1                                          {:RESULT=v1;:}
-|DECIMAL:v1                                         {:RESULT=v1;:}
+s61::= ID:v1
+|ENTERO:v1
+|DECIMAL:v1
 ;
 //GRAMATICA: FOR -->FIN
 
 //GRAMATICA: SWITCH -->INICIO
-s62::= SWITCH s63 
+s62::= SWITCH s63
 ;
 s63::= PARENTESIS_A s64
 | error                                             {:System.out.println("Se esperaba (");:}
@@ -374,12 +462,12 @@ s76::= DOS_PUNTOS sentences
 //GRAMATICA: SWITCH -->FIN
 
 //GRAMATICA: CLASE -->INICIO
-s95::= PUBLIC:v1 s96:v2                                          
-|s96:v1                                         
+s95::= PUBLIC:v1 s96:v2                                 {:v2.setVisibilidad(Visibilidad.PUBLIC); tablaSimbolos.add(v2);:}
+|s96:v1                                                 {:v1.setVisibilidad(Visibilidad.DEFAULT); tablaSimbolos.add(v1);:}
 ;
-s96::= CLASS s97
+s96::= CLASS:v1 s97:v2                                 {:v2.setRol(Roles.CLASE); RESULT=v2;:}
 ;
-s97::= ID s98
+s97::= ID:v1 s98                                 {:Termino term = new Termino(); term.setNombre(v1); RESULT=term;:} 
 |error                                           {:System.out.println("Se esperaba el nombre de la clase");:}
 ;
 s98::= LLAVE_A s99
@@ -390,76 +478,6 @@ s99::= s7 s99
 |error                                           {:System.out.println("Se esperaban los miembro de la clase, constructor o }");:}
 ;
 //GRAMATICA: CLASE -->FIN
-
-//GRAMATICA: DECLARACION DE ATRIBUTOS -->INICIO
-s7::= PUBLIC s101                  
-| PRIVATED s101                             
-| PROTECTED s101                            
-| s101                                                         
-;
-s101::= s8
-| ID s89
-;
-s8::= FINAL s9                          
-| s9                                           
-;                    
-s9::= INT s10                             
-|BOOLEAN s10                                
-|STRING s10                                 
-|CHAR s10                                   
-|DOUBLE s10                                 
-|ID s10
-|VOID ID s81                                     
-;                    
-s10::= ID s104                              
-| error                                             {:System.out.println("Se esperaba un identificador");:}
-;
-s104::= s11
-|s81
-;                       
-s11::= s115                                   
-| ASIGNACION exp s115
-| ASIGNACION NEW ID PARENTESIS_A argumento PARENTESIS_C P_COMA                    
-| error                                             {:System.out.println("Se esperaba punto y coma, signo igual o (");:}
-;
-s115::= COMA s10
-| P_COMA
-;
-exp ::= exp MAS exp                           
-| exp MENOS exp                               
-| exp POR exp                                 
-| exp DIVISION exp                            
-| PARENTESIS_A exp PARENTESIS_C            
-| valor                                          
-| error                                             {:System.out.println("Se esperaba un valor");:}
-;
-valor::= CADENA                                  
-|TRUE                                            
-|FALSE                                           
-|CARACTER                                        
-|NULL                                            
-|ENTERO                                          
-|DECIMAL                                         
-;
-//GRAMATICA: DECLARACION DE ATRIBUTOS -->FIN
-
-//GRAMATICA: METODOS Y FUNCIONES -->INICIO
-s81::= PARENTESIS_A s82
-;
-s82::= parametro s83
-|error                                           {:System.out.println("Se esperaban los parametros o ) ");:}
-;
-s83::= PARENTESIS_C s84
-;
-s84::= LLAVE_A s85
-|error                                           {:System.out.println("Se esperaba {");:}
-;
-s85::= sentences s86
-|error                                           {:System.out.println("Se esperaban las sentencias o } ");:}
-;
-s86::= LLAVE_C
-;
-//GRAMATICA: METODOS Y FUNCIONES -->FIN
 
 //GRAMATICA: CONSTRUCTOR -->INICIO
 s89::= PARENTESIS_A s90

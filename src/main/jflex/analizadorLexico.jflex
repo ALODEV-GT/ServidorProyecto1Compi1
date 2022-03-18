@@ -24,10 +24,10 @@ import midik.cup.sym;
 
 %}
 
-//Palabras reservadas
+//Palabras reservadasSimbolos
 IMPORT = "import"
 PUBLIC = "public"
-PRIVATED = "private"
+PRIVATE = "private"
 PROTECTED = "protected"
 CLASS = "class"
 INT = "int"
@@ -118,7 +118,7 @@ NULL = "null"
 <YYINITIAL> {CARACTER}                          {return symbol(sym.CARACTER, yytext());}
 <YYINITIAL> {IMPORT}                            {return symbol(sym.IMPORT, yytext());}          
 <YYINITIAL> {PUBLIC}                            {return symbol(sym.PUBLIC, yytext());}          
-<YYINITIAL> {PRIVATED}                          {return symbol(sym.PRIVATED, yytext());}            
+<YYINITIAL> {PRIVATE}                           {return symbol(sym.PRIVATE, yytext());}            
 <YYINITIAL> {PROTECTED}                         {return symbol(sym.PROTECTED, yytext());}           
 <YYINITIAL> {CLASS}                             {return symbol(sym.CLASS, yytext());}           
 <YYINITIAL> {INT}                               {return symbol(sym.INT, yytext());}         

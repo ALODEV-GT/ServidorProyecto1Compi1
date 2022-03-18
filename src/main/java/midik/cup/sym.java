@@ -15,13 +15,13 @@ public class sym {
   public static final int DIFERENTE = 38;
   public static final int DOUBLE = 10;
   public static final int DOS_PUNTOS = 54;
+  public static final int PRIVATE = 4;
   public static final int INT = 7;
   public static final int LLAVE_C = 25;
   public static final int FOR = 14;
   public static final int LLAVE_A = 24;
   public static final int NOT = 41;
   public static final int AND = 39;
-  public static final int PRIVATED = 4;
   public static final int IGUAL = 32;
   public static final int CARACTER = 50;
   public static final int OR = 40;
@@ -71,7 +71,7 @@ public class sym {
   "error",
   "IMPORT",
   "PUBLIC",
-  "PRIVATED",
+  "PRIVATE",
   "PROTECTED",
   "CLASS",
   "INT",

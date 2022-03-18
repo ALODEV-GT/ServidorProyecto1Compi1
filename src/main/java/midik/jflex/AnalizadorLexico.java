@@ -1105,7 +1105,7 @@ public class AnalizadorLexico implements java_cup.runtime.Scanner {
             // fall through
           case 118: break;
           case 59:
-            { return symbol(sym.PRIVATED, yytext());
+            { return symbol(sym.PRIVATE, yytext());
             }
             // fall through
           case 119: break;

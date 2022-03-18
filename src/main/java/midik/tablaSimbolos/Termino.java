@@ -5,13 +5,13 @@ public class Termino {
     private String nombre;
     private String tipo;
     private String ambito;
-    private String visibilidad;
-    private String rol;
+    private Visibilidad visibilidad;
+    private Roles rol;
 
     public Termino() {
     }
 
-    public Termino(String nombre, String tipo, String ambito, String visibilidad, String rol) {
+    public Termino(String nombre, String tipo, String ambito, Visibilidad visibilidad, Roles rol) {
         this.nombre = nombre;
         this.tipo = tipo;
         this.ambito = ambito;
@@ -43,20 +43,25 @@ public class Termino {
         this.ambito = ambito;
     }
 
-    public String getVisibilidad() {
+    public Visibilidad getVisibilidad() {
         return visibilidad;
     }
 
-    public void setVisibilidad(String visibilidad) {
+    public void setVisibilidad(Visibilidad visibilidad) {
         this.visibilidad = visibilidad;
     }
 
-    public String getRol() {
+    public Roles getRol() {
         return rol;
     }
 
-    public void setRol(String rol) {
+    public void setRol(Roles rol) {
         this.rol = rol;
+    }
+
+    @Override
+    public String toString() {
+        return "Termino{" + "nombre=" + nombre + ", tipo=" + tipo + ", ambito=" + ambito + ", visibilidad=" + visibilidad + ", rol=" + rol + '}';
     }
 
 }
