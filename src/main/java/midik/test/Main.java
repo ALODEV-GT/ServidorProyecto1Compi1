@@ -27,4 +27,26 @@ public class Main {
             System.out.println("Ocurrieron errores");
         }
     }
+    
+    public int metodo(){
+        if (true) {
+            return 0;
+        }
+        boolean existe = true;
+        while(existe){
+            return 0;
+        }
+
+        int valor = 0;
+        switch(valor){
+            case 1: 
+                return 3;
+        }
+        
+        for (int i = 0; i < 10; i++) {
+            return 0;
+        }
+        
+        return 0;
+    }
 }

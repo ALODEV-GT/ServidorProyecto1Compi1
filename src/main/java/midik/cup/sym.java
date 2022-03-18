@@ -34,6 +34,7 @@ public class sym {
   public static final int BOOLEAN = 8;
   public static final int RETURN = 20;
   public static final int TRUE = 48;
+  public static final int NEW = 56;
   public static final int DECREMENTO = 43;
   public static final int error = 1;
   public static final int COMA = 23;
@@ -120,7 +121,8 @@ public class sym {
   "CASE",
   "DEFAULT",
   "DOS_PUNTOS",
-  "VOID"
+  "VOID",
+  "NEW"
   };
 }
 

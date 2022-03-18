@@ -18,12 +18,15 @@ terminal String IMPORT,PUBLIC,PRIVATED,PROTECTED,CLASS,INT,BOOLEAN,STRING,DOUBLE
             IF,ELSE,FOR,WHILE,DO,SWITCH,FINAL,BREAK,RETURN,P_COMA,PUNTO,COMA,LLAVE_A,
             LLAVE_C,PARENTESIS_A,PARENTESIS_C,MAS,MENOS,POR,DIVISION,IGUAL,MAYOR_IGUAL,
             MENOR_IGUAL,ASIGNACION,MAYOR_QUE,MENOR_QUE,DIFERENTE,AND,OR,NOT,INCREMENTO,
-            DECREMENTO,ID,ENTERO,DECIMAL,CADENA,TRUE,FALSE,CARACTER,NULL,CASE,DEFAULT,DOS_PUNTOS,VOID;
+            DECREMENTO,ID,ENTERO,DECIMAL,CADENA,TRUE,FALSE,CARACTER,NULL,CASE,DEFAULT,DOS_PUNTOS,VOID,NEW;
 
 non terminal String s1,s2,s3,s4,s5,s6; //GRAMATICA: IMPORT
-non terminal String s7, s8, s9, s10, s11, valor, exp; //GRAMATICA: DECLARACION DE ATRIBUTOS
+non terminal String s7, s8, s9, s10, s11, valor, exp, s115; //GRAMATICA: DECLARACION DE ATRIBUTOS
 non terminal String s12,s13; //GRAMATICA: DECLARACION DE VARIABLES
 non terminal String s14,s15,s16,parametro; //GRAMATICA: PARAMETROS
+non terminal String s105,s106,s107; //GRAMATICA: RETURN
+non terminal String s108,s109,s110,s111,s112; //GRAMATICA: LLAMADA A METODOS/FUNCIONES
+non terminal String s113,s114,argumento; //GRAMATICA: ARGUMENTO
 non terminal String s17,s18,s19,s20,s21,s22,s23,s24,s25,s26,s27,s28,s29,s30,s31,s32,s33,s34,condicion,opcompa,sentences; //GRAMATICA: IF, IF-ELSE
 non terminal String s35,s36,s37,s38,s39,s40,s41; //GRAMATICA: WHILE
 non terminal String s42,s43,s44,s45,s46,s47,s48,s49,s50; //GRAMATICA: DO-WHILE
@@ -43,13 +46,12 @@ precedence left POR, DIVISION;
 precedence left PARENTESIS_A, PARENTESIS_C;
 
 start with s0;
-//INICIO UNION DE GRAMATICA
+//INICIO
 s0::= s1 s0
 | s95
 |
 ;
-
-//FIN UNINIO DE GRAMATICA
+//FIN
 
 //GRAMATICA: IMPORT -->INICIO
 s1::= IMPORT:v1 s2:v2               {: :} 
@@ -73,7 +75,6 @@ s6::= P_COMA:v1                     {:RESULT=v1;:}
 ;
 //GRAMATICA: IMPORT -->FIN
 
-
 //GRAMATICA: DECLARACION/ASIGNACION DE VARIABLES -->INICIO
 s12::= FINAL:v1 s9:v2                         {:RESULT=v1+" "+v2;:}
 |s9:v1                                              {:RESULT=v1;:}
@@ -83,9 +84,8 @@ s13::= ASIGNACION:v1 exp:v2 P_COMA:v3               {:RESULT=v1 + " " + v2 + " "
 ;
 //GRAMATICA: DECLARACION/ASIGNACION DE VARIABLES -->FIN
 
-
 //GRAMATICA: PARAMETROS -->INICIO
-parametro::= s14 parametro
+parametro::= s14
 |
 ;
 s14::= INT:v1 s15:v2                              {:RESULT=v1 + " " + v2;:}
@@ -101,21 +101,46 @@ s15::= ID:v1 s16:v2                               {:RESULT=v1 + " " + v2;:}
 s16::= COMA s14
 |
 ;
-
 //GRAMATICA: PARAMETROS -->FIN
 
+//GRAMATICA: RETURN -->INICIO
+s105::= RETURN s106
+;
+s106::= valor s107
+| ID s107
+| error {:System.out.println("Se esperaba un valor y punto y coma");:} 
+;
+s107::= P_COMA
+;
+//GRAMATICA: RETURN -->FIN
 
+//GRAMATICA: LLAMADA A METODOS/FUNCIONES --> INICIO
+s108::= ID s109
+;
+s109::= PARENTESIS_A s110 
+;
+s110::= argumento s111
+| error {:System.out.println("Se esperaban los paramteros o )");:} 
+;
+s111::= PARENTESIS_C s112
+;
+s112::= P_COMA
+| error {:System.out.println("Se esperaba punto y coma ");:} 
+;
+//GRAMATICA: LLAMADA A A METODOS/FUNCIONES --> FIN
 
-
-
-
-
-
-
-
-
-
-
+//GRAMATICA: ARGUMENTOS -->INICIO
+argumento::= s113
+|
+;
+s113::= ID:v1 s114:v2                               {:RESULT=v1 + " " + v2;:}
+| exp s114
+;
+s114::= COMA s113
+|
+|error                                            {:System.out.println("Se esperaba argumentos o )");:}
+;
+//GRAMATICA: ARGUMENTOS -->FIN
 
 //GRAMATICA: IF -->INICIO
 s17::=IF:v1 s18:v2
@@ -128,10 +153,12 @@ s19::= condicion s20
 ;
 condicion::= NOT s24 s25
 | s24 s25
-| NOT s26 s25 
+| NOT s26 s25
+| s26 
 | s27 s25
 | s28 s25
 ;
+
 s25::= AND condicion
 | OR condicion
 | 
@@ -163,17 +190,16 @@ s21::= LLAVE_A s22
 s22::=sentences s23
 | error {:System.out.println("Se esperaban las sentencias o } ");:}
 ;
-
 sentences::= s17 sentences
 | s35 sentences
 | s42 sentences
 | s51 sentences
 | s62 sentences
 | s12 sentences
+| s105 sentences
+| s108 sentences
 |
 ;
-
-
 s23::= LLAVE_C s31
 ;
 opcompa::=DIFERENTE:v1             {:RESULT=v1;:}
@@ -183,7 +209,6 @@ opcompa::=DIFERENTE:v1             {:RESULT=v1;:}
  | MENOR_QUE:v1            {:RESULT=v1;:}
  | IGUAL:v1            {:RESULT=v1;:}
 ;
-
 s29 ::= s29:v1 MAS s29:v2                          {:RESULT = v1 + "+" + v2;:}
 | s29:v1 MENOS s29:v2                               {:RESULT = v1 + "-" + v2;:}
 | s29:v1 POR s29:v2                                 {:RESULT = v1 + "*" + v2;:}
@@ -191,14 +216,12 @@ s29 ::= s29:v1 MAS s29:v2                          {:RESULT = v1 + "+" + v2;:}
 | PARENTESIS_A:v1 s29:v2 PARENTESIS_C:v3             {:RESULT = v1+v2+v3;:}
 | s30:v1                                            {:RESULT = v1;:}
 ;
-
 s30::= CADENA:v1                                   {:RESULT=v1;:}
 |CARACTER :v1                                       {:RESULT=v1;:}
 |NULL:v1                                            {:RESULT=v1;:}
 |ENTERO:v1                                          {:RESULT=v1;:}
 |DECIMAL:v1                                         {:RESULT=v1;:}
 ;
-
 s31::= ELSE s32
 |
 ;
@@ -235,7 +258,6 @@ s41::= LLAVE_C
 //GRAMATICA: WHILE -->FIN
 
 //GRAMATICA: DO WHILE -->INICIO
-
 s42::= DO s43
 ;
 s43::= LLAVE_A s44
@@ -299,7 +321,6 @@ s61::= ID:v1                                  {:RESULT=v1;:}
 |ENTERO:v1                                          {:RESULT=v1;:}
 |DECIMAL:v1                                         {:RESULT=v1;:}
 ;
-
 //GRAMATICA: FOR -->FIN
 
 //GRAMATICA: SWITCH -->INICIO
@@ -320,7 +341,6 @@ s66::= LLAVE_A s67
 s67::= s68
 | error                                             {:System.out.println("Se esperaban los casos o }");:}
 ;
-
 s68::= CASE s69 s68
 | s75 LLAVE_C
 | LLAVE_C
@@ -349,18 +369,6 @@ s76::= DOS_PUNTOS sentences
 ;
 //GRAMATICA: SWITCH -->FIN
 
-
-
-
-
-
-
-
-
-
-
-
-//#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#----------------------------------------------->
 //GRAMATICA: CLASE -->INICIO
 s95::= PUBLIC:v1 s96:v2                                          
 |s96:v1                                         
@@ -404,9 +412,13 @@ s10::= ID s104
 s104::= s11
 |s81
 ;                       
-s11::= P_COMA                                   
-| ASIGNACION exp P_COMA                    
+s11::= s115                                   
+| ASIGNACION exp s115
+| ASIGNACION NEW ID PARENTESIS_A argumento PARENTESIS_C P_COMA                    
 | error                                             {:System.out.println("Se esperaba punto y coma, signo igual o (");:}
+;
+s115::= COMA s10
+| P_COMA
 ;
 exp ::= exp MAS exp                           
 | exp MENOS exp                               

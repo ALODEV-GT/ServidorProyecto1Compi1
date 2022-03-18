@@ -47,6 +47,7 @@ RETURN = "return"
 CASE = "case"
 DEFAULT = "default"
 VOID = "void"
+NEW = "new"
 
 //Signos de puntuacion
 P_COMA = ";"
@@ -134,7 +135,8 @@ NULL = "null"
 <YYINITIAL> {RETURN}                            {return symbol(sym.RETURN, yytext());}
 <YYINITIAL> {CASE}                              {return symbol(sym.CASE, yytext());}
 <YYINITIAL> {DEFAULT}                           {return symbol(sym.DEFAULT, yytext());}
-<YYINITIAL> {VOID}                              {return symbol(sym.VOID, yytext());}       
+<YYINITIAL> {VOID}                              {return symbol(sym.VOID, yytext());} 
+<YYINITIAL> {NEW}                               {return symbol(sym.NEW, yytext());}
 <YYINITIAL> {P_COMA}                            {return symbol(sym.P_COMA, yytext());}
 <YYINITIAL> {PUNTO}                             {return symbol(sym.PUNTO, yytext());}
 <YYINITIAL> {COMA}                              {return symbol(sym.COMA, yytext());}
