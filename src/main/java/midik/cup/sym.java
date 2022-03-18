@@ -28,6 +28,7 @@ public class sym {
   public static final int CLASS = 6;
   public static final int INCREMENTO = 42;
   public static final int IF = 12;
+  public static final int THIS = 57;
   public static final int ID = 44;
   public static final int DECIMAL = 46;
   public static final int EOF = 0;
@@ -122,7 +123,8 @@ public class sym {
   "DEFAULT",
   "DOS_PUNTOS",
   "VOID",
-  "NEW"
+  "NEW",
+  "THIS"
   };
 }
 

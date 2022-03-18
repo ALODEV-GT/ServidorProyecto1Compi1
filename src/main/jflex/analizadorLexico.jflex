@@ -48,6 +48,7 @@ CASE = "case"
 DEFAULT = "default"
 VOID = "void"
 NEW = "new"
+THIS = "this"
 
 //Signos de puntuacion
 P_COMA = ";"
@@ -109,6 +110,7 @@ CARACTER = "'"{CARACTERES}"'"
 NULL = "null"
 
 %%
+<YYINITIAL> {PUNTO}                             {return symbol(sym.PUNTO, yytext());}
 <YYINITIAL> {TRUE}                              {return symbol(sym.TRUE, yytext());}
 <YYINITIAL> {FALSE}                             {return symbol(sym.FALSE, yytext());}
 <YYINITIAL> {NULL}                              {return symbol(sym.NULL, yytext());}
@@ -137,8 +139,8 @@ NULL = "null"
 <YYINITIAL> {DEFAULT}                           {return symbol(sym.DEFAULT, yytext());}
 <YYINITIAL> {VOID}                              {return symbol(sym.VOID, yytext());} 
 <YYINITIAL> {NEW}                               {return symbol(sym.NEW, yytext());}
+<YYINITIAL> {THIS}                               {return symbol(sym.THIS, yytext());}
 <YYINITIAL> {P_COMA}                            {return symbol(sym.P_COMA, yytext());}
-<YYINITIAL> {PUNTO}                             {return symbol(sym.PUNTO, yytext());}
 <YYINITIAL> {COMA}                              {return symbol(sym.COMA, yytext());}
 <YYINITIAL> {DOS_PUNTOS}                        {return symbol(sym.DOS_PUNTOS, yytext());}
 <YYINITIAL> {LLAVE_A}                           {return symbol(sym.LLAVE_A, yytext());}

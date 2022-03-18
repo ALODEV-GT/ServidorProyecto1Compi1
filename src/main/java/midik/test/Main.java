@@ -9,7 +9,7 @@ import midik.jflex.AnalizadorLexico;
 
 public class Main {
     public static void main(String[] args) {
-        File archivo = new File("/home/midik/entradaJava.txt");
+        File archivo = new File("/home/midik/entradaJava.java");
         String entrada = "";
          try {
             entrada = new String(Files.readAllBytes(archivo.toPath()));

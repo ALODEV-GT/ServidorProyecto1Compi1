@@ -18,7 +18,7 @@ terminal String IMPORT,PUBLIC,PRIVATED,PROTECTED,CLASS,INT,BOOLEAN,STRING,DOUBLE
             IF,ELSE,FOR,WHILE,DO,SWITCH,FINAL,BREAK,RETURN,P_COMA,PUNTO,COMA,LLAVE_A,
             LLAVE_C,PARENTESIS_A,PARENTESIS_C,MAS,MENOS,POR,DIVISION,IGUAL,MAYOR_IGUAL,
             MENOR_IGUAL,ASIGNACION,MAYOR_QUE,MENOR_QUE,DIFERENTE,AND,OR,NOT,INCREMENTO,
-            DECREMENTO,ID,ENTERO,DECIMAL,CADENA,TRUE,FALSE,CARACTER,NULL,CASE,DEFAULT,DOS_PUNTOS,VOID,NEW;
+            DECREMENTO,ID,ENTERO,DECIMAL,CADENA,TRUE,FALSE,CARACTER,NULL,CASE,DEFAULT,DOS_PUNTOS,VOID,NEW,THIS;
 
 non terminal String s1,s2,s3,s4,s5,s6; //GRAMATICA: IMPORT
 non terminal String s7, s8, s9, s10, s11, valor, exp, s115; //GRAMATICA: DECLARACION DE ATRIBUTOS
@@ -54,11 +54,11 @@ s0::= s1 s0
 //FIN
 
 //GRAMATICA: IMPORT -->INICIO
-s1::= IMPORT:v1 s2:v2               {: :} 
-| error                             {:System.out.println("Se esperaba mas import o class");:}              
+s1::= IMPORT:v1 s2:v2               {: :}    
+| error                             {:System.out.println("Se esperaba import o la definicion de una clase.");:}           
 ;
 s2::= ID:v1 s3:v2                   {:RESULT=v1 + v2;:}
-| error                             {:System.out.println("Se esperaba un id");:}
+| error                             {:System.out.println("Se esperaba el nombre del paquete");:}
 ;
 s3::= PUNTO:v1 s4:v2                {:RESULT=v1 + v2;:}
 | error                             {:System.out.println("Se esperaba un punto, punto coma, o el import es muy corto Ej: import pack;");:}
@@ -78,10 +78,13 @@ s6::= P_COMA:v1                     {:RESULT=v1;:}
 //GRAMATICA: DECLARACION/ASIGNACION DE VARIABLES -->INICIO
 s12::= FINAL:v1 s9:v2                         {:RESULT=v1+" "+v2;:}
 |s9:v1                                              {:RESULT=v1;:}
+|THIS PUNTO ID:v1 s13:v2                                      {:RESULT=v1+" "+v2;:}
 |ID:v1 s13:v2                                       {:RESULT=v1+" "+v2;:}
 ;
 s13::= ASIGNACION:v1 exp:v2 P_COMA:v3               {:RESULT=v1 + " " + v2 + " " + v3;:}
+| ASIGNACION ID P_COMA
 ;
+
 //GRAMATICA: DECLARACION/ASIGNACION DE VARIABLES -->FIN
 
 //GRAMATICA: PARAMETROS -->INICIO
@@ -116,11 +119,12 @@ s107::= P_COMA
 
 //GRAMATICA: LLAMADA A METODOS/FUNCIONES --> INICIO
 s108::= ID s109
+| THIS PUNTO ID s109
 ;
 s109::= PARENTESIS_A s110 
 ;
 s110::= argumento s111
-| error {:System.out.println("Se esperaban los paramteros o )");:} 
+| error {:System.out.println("Se esperaban los argumentos o )");:} 
 ;
 s111::= PARENTESIS_C s112
 ;
@@ -154,7 +158,7 @@ s19::= condicion s20
 condicion::= NOT s24 s25
 | s24 s25
 | NOT s26 s25
-| s26 
+| s26 s25
 | s27 s25
 | s28 s25
 ;
@@ -383,6 +387,7 @@ s98::= LLAVE_A s99
 ;
 s99::= s7 s99
 | LLAVE_C
+|error                                           {:System.out.println("Se esperaban los miembro de la clase, constructor o }");:}
 ;
 //GRAMATICA: CLASE -->FIN
 
@@ -468,7 +473,7 @@ s92::= LLAVE_A s93
 |error                                           {:System.out.println("Se esperaba { ");:}
 ;
 s93::= sentences s94
-|error                                           {:System.out.println("Se esperaban las sentencias o } cons ");:}
+|error                                           {:System.out.println("Se esperaban las sentencias o }");:}
 ;
 s94::= LLAVE_C
 ;
