@@ -6,7 +6,11 @@ import midik.tablaSimbolos.Visibilidad;
 import midik.tablaSimbolos.Roles;
 
 parser code
-{:
+{:  
+    private String nombreClase="";
+    private String ambitoActual="";
+    private String temp=""; 
+
     private ArrayList<Termino> tablaSimbolos = new ArrayList<>();
 
     public ArrayList<Termino> getTablaSimbolos(){
@@ -20,7 +24,6 @@ parser code
     public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception {
         System.out.println("No se pudo recuperar el analizador. Linea:" + s.right + " Columna:" + s.left);
     }
-
 :};
 
 terminal String IMPORT,PUBLIC,PRIVATE,PROTECTED,CLASS,INT,BOOLEAN,STRING,DOUBLE,CHAR,
@@ -32,20 +35,19 @@ terminal String IMPORT,PUBLIC,PRIVATE,PROTECTED,CLASS,INT,BOOLEAN,STRING,DOUBLE,
 non terminal String s1,s2,s3,s4,s5,s6; //GRAMATICA: IMPORT
 non terminal Termino s7, s8, s9, s10, s11, valor, exp, s115; //GRAMATICA: DECLARACION DE ATRIBUTOS
 non terminal Termino s12,s13; //GRAMATICA: DECLARACION DE VARIABLES
-non terminal String s14,s15,s16,parametro; //GRAMATICA: PARAMETROS
+non terminal Termino s14,s15,s16,parametro; //GRAMATICA: PARAMETROS
 non terminal String s105,s106,s107; //GRAMATICA: RETURN
-non terminal String s108,s109,s110,s111,s112; //GRAMATICA: LLAMADA A METODOS/FUNCIONES
+non terminal Termino s108,s109,s110,s111,s112; //GRAMATICA: LLAMADA A METODOS/FUNCIONES
 non terminal String s113,s114,argumento; //GRAMATICA: ARGUMENTO
 non terminal String s17,s18,s19,s20,s21,s22,s23,s24,s25,s26,s27,s28,s29,s30,s31,s32,s33,s34,condicion,opcompa,sentences; //GRAMATICA: IF, IF-ELSE
 non terminal String s35,s36,s37,s38,s39,s40,s41; //GRAMATICA: WHILE
 non terminal String s42,s43,s44,s45,s46,s47,s48,s49,s50; //GRAMATICA: DO-WHILE
 non terminal String s51,s52,s53,s54,s55,s56,s57,s58,s59,s60,s61; //GRAMATICA: FOR
 non terminal String s62,s63,s64,s65,s66,s67,s68,s69,s70,s71,s72,s73,s74,s75,s76; //GRAMATICA: SWITCH
-non terminal String s81,s82,s83,s84,s85,s86; //GRAMATICA: FUNCIONES Y METODOS
+non terminal Termino s81,s82,s83,s84,s85,s86; //GRAMATICA: FUNCIONES Y METODOS
 non terminal String s89,s90,s91,s92,s93,s94; //GRAMATICA: CONSTRUCTOR
 non terminal Termino s95,s96,s97,s98,s99; //GRAMATICA: CLASE
-non terminal String s104;
-non terminal Termino s101;
+non terminal Termino s101,s104;
 
 non terminal String s0; //Comun
 
@@ -88,8 +90,8 @@ s6::= P_COMA:v1
 
 
 //GRAMATICA: DECLARACION/ASIGNACION DE VARIABLES -->INICIO
-s12::= FINAL s9:v1                                  {:v1.setRol(Roles.VARIABLE); tablaSimbolos.add(v1);:}
-|s9:v1                                              {:v1.setRol(Roles.VARIABLE); tablaSimbolos.add(v1);:}
+s12::= FINAL s9:v1                                  {:v1.setRol(Roles.VARIABLE); v1.setAmbito(ambitoActual); tablaSimbolos.add(v1);:}
+|s9:v1                                              {:v1.setRol(Roles.VARIABLE); v1.setAmbito(ambitoActual); tablaSimbolos.add(v1);:}
 |THIS PUNTO ID s13                      
 |ID s13                                       
 ;
@@ -101,16 +103,18 @@ s13::= ASIGNACION exp P_COMA
 //GRAMATICA: DECLARACION/ASIGNACION DE VARIABLES -->FIN
 
 //GRAMATICA: DECLARACION DE ATRIBUTOS -->INICIO
-s7::= PUBLIC:v1 s101:v2             {:v2.setVisibilidad(Visibilidad.PUBLIC); v2.setRol(Roles.VARIABLE); tablaSimbolos.add(v2);:}
-| PRIVATE:v1 s101:v2               {:v2.setVisibilidad(Visibilidad.PRIVATE); v2.setRol(Roles.VARIABLE); tablaSimbolos.add(v2);:}
-| PROTECTED:v1 s101:v2              {:v2.setVisibilidad(Visibilidad.PROTECTED); v2.setRol(Roles.VARIABLE); tablaSimbolos.add(v2);:}
+s7::= PUBLIC:v1 s101:v2             {:if(v2.getRol()==null){v2.setRol(Roles.VARIABLE);} v2.setAmbito(nombreClase); v2.setVisibilidad(Visibilidad.PUBLIC);  tablaSimbolos.add(v2);:}
+| PRIVATE:v1 s101:v2                {:if(v2.getRol()==null){v2.setRol(Roles.VARIABLE);} v2.setAmbito(nombreClase); v2.setVisibilidad(Visibilidad.PRIVATE); tablaSimbolos.add(v2);:}
+| PROTECTED:v1 s101:v2              {:if(v2.getRol()==null){v2.setRol(Roles.VARIABLE);} v2.setAmbito(nombreClase); v2.setVisibilidad(Visibilidad.PROTECTED); tablaSimbolos.add(v2);:}
 | s101:v1                           {:  if(v1!=null){
-                                            v1.setVisibilidad(Visibilidad.DEFAULT); v1.setRol(Roles.VARIABLE); tablaSimbolos.add(v1);
+                                            if(v1.getRol()==null){v1.setRol(Roles.VARIABLE);}
+                                            v1.setAmbito(nombreClase);
+                                            v1.setVisibilidad(Visibilidad.DEFAULT); tablaSimbolos.add(v1);
                                         }
                                     :}
 ;
 s101::= s8:v1                       {:RESULT=v1;:}
-| ID s89
+| ID:v1 {:ambitoActual="Constructor "+v1;:} s89
 ;
 s8::= FINAL s9:v1                   {:RESULT=v1;:}
 | s9:v1                             {:RESULT=v1;:}
@@ -121,13 +125,19 @@ s9::= INT:v1 s10:v2                 {:v2.setTipo(v1); RESULT=v2;:}
 |CHAR:v1 s10:v2                     {:v2.setTipo(v1); RESULT=v2;:}
 |DOUBLE:v1 s10:v2                   {:v2.setTipo(v1); RESULT=v2;:}
 |ID:v1 s10:v2                       {:v2.setTipo(v1); RESULT=v2;:}
-|VOID ID s81
+|VOID:v1 ID:v2 {:temp="Metodo/Funcion "+v2;:} s81:v3               {:v3.setNombre(v2); v3.setTipo(v1); RESULT=v3;:}
 ;
-s10::= ID:v1 s104                                {:Termino term = new Termino(); term.setNombre(v1); RESULT=term;:}
-| error                                             {:System.out.println("Se esperaba un identificador");:}
+s10::= ID:v1 {:temp="Metodo/Funcion "+v1;:} s104:v2   {:  
+                                                if(v2==null){
+                                                    Termino term = new Termino(); term.setNombre(v1); RESULT=term;
+                                                }else{
+                                                    v2.setNombre(v1); RESULT=v2;    
+                                                }
+                                            :}
+| error                                 {:System.out.println("Se esperaba un identificador");:}
 ;
-s104::= s11:v1                                      
-|s81
+s104::= s11:v1                         {:RESULT=null;:}                                
+|s81:v1                                {:RESULT=v1;:}
 ;
 s11::= s115:v1                                      
 | ASIGNACION exp s115:v1                            
@@ -156,7 +166,7 @@ valor::= CADENA:v1
 //GRAMATICA: DECLARACION DE ATRIBUTOS -->FIN
 
 //GRAMATICA: METODOS Y FUNCIONES -->INICIO
-s81::= PARENTESIS_A s82
+s81::= PARENTESIS_A {:ambitoActual=temp;:} s82   {:Termino term = new Termino(); term.setRol(Roles.METODO_FUNCION); RESULT=term;:}
 ;
 s82::= parametro s83
 |error                                           {:System.out.println("Se esperaban los parametros o ) ");:}
@@ -174,17 +184,17 @@ s86::= LLAVE_C
 //GRAMATICA: METODOS Y FUNCIONES -->FIN
 
 //GRAMATICA: PARAMETROS -->INICIO
-parametro::= s14
+parametro::= s14:v1                               {::}
 |
 ;
-s14::= INT:v1 s15:v2                              {:RESULT=v1 + " " + v2;:}
-|BOOLEAN:v1 s15:v2                                {:RESULT=v1 + " " + v2;:}
-|STRING:v1 s15:v2                                 {:RESULT=v1 + " " + v2;:}
-|CHAR:v1 s15:v2                                   {:RESULT=v1 + " " + v2;:}
-|DOUBLE:v1 s15:v2                                 {:RESULT=v1 + " " + v2;:}
-|ID:v1 s15:v2                                     {:RESULT=v1 + " " + v2;:}
+s14::= INT:v1 s15:v2                              {:v2.setTipo(v1); v2.setAmbito(ambitoActual); v2.setRol(Roles.PARAMETRO); tablaSimbolos.add(v2);:}
+|BOOLEAN:v1 s15:v2                                {:v2.setTipo(v1); v2.setAmbito(ambitoActual); v2.setRol(Roles.PARAMETRO); tablaSimbolos.add(v2);:}
+|STRING:v1 s15:v2                                 {:v2.setTipo(v1); v2.setAmbito(ambitoActual); v2.setRol(Roles.PARAMETRO); tablaSimbolos.add(v2);:}
+|CHAR:v1 s15:v2                                   {:v2.setTipo(v1); v2.setAmbito(ambitoActual); v2.setRol(Roles.PARAMETRO); tablaSimbolos.add(v2);:}
+|DOUBLE:v1 s15:v2                                 {:v2.setTipo(v1); v2.setAmbito(ambitoActual); v2.setRol(Roles.PARAMETRO); tablaSimbolos.add(v2);:}
+|ID:v1 s15:v2                                     {:v2.setTipo(v1); v2.setAmbito(ambitoActual); v2.setRol(Roles.PARAMETRO); tablaSimbolos.add(v2);:}
 ;
-s15::= ID:v1 s16:v2                               {:RESULT=v1 + " " + v2;:}
+s15::= ID:v1 s16                                  {:Termino term = new Termino(); term.setNombre(v1); RESULT=term;:}
 |error                                            {:System.out.println("Se esperaba un id");:}
 ;
 s16::= COMA s14
@@ -467,7 +477,7 @@ s95::= PUBLIC:v1 s96:v2                                 {:v2.setVisibilidad(Visi
 ;
 s96::= CLASS:v1 s97:v2                                 {:v2.setRol(Roles.CLASE); RESULT=v2;:}
 ;
-s97::= ID:v1 s98                                 {:Termino term = new Termino(); term.setNombre(v1); RESULT=term;:} 
+s97::= ID:v1 {:nombreClase="Clase "+v1;:} s98          {:Termino term = new Termino(); term.setNombre(v1); ambitoActual="Clase "+v1; RESULT=term;:} 
 |error                                           {:System.out.println("Se esperaba el nombre de la clase");:}
 ;
 s98::= LLAVE_A s99

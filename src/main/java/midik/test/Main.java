@@ -10,23 +10,24 @@ import midik.jflex.AnalizadorLexico;
 import midik.tablaSimbolos.Termino;
 
 public class Main {
+
     public static void main(String[] args) {
         File archivo = new File("/home/midik/entradaJava.java");
         String entrada = "";
-         try {
+        try {
             entrada = new String(Files.readAllBytes(archivo.toPath()));
         } catch (IOException ex) {
-            
+
         }
         StringReader sr = new StringReader(entrada);
         AnalizadorLexico lexer = new AnalizadorLexico(sr);
         parser par = new parser(lexer);
-        
+
         try {
             par.parse();
             ArrayList<Termino> tablaSimbolos = par.getTablaSimbolos();
             System.out.println("<-------------TABLA SIMBOLOS------------>");
-            for(Termino term: tablaSimbolos){
+            for (Termino term : tablaSimbolos) {
                 System.out.println(term);
             }
             System.out.println("Analisis correcto");
@@ -35,26 +36,5 @@ public class Main {
             System.out.println("Ocurrieron errores");
         }
     }
-    
-    public int metodo(){
-        if (true) {
-            return 0;
-        }
-        boolean existe = true;
-        while(existe){
-            return 0;
-        }
 
-        int valor = 0;
-        switch(valor){
-            case 1: 
-                return 3;
-        }
-        
-        for (int i = 0; i < 10; i++) {
-            return 0;
-        }
-        
-        return 0;
-    }
 }
