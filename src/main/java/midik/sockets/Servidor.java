@@ -2,9 +2,12 @@ package midik.sockets;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import midik.comparacion.Comparar;
+import midik.frontend.VtnErrores;
 
 public class Servidor {
 
@@ -18,6 +21,8 @@ public class Servidor {
         try {
             servidor = new ServerSocket(PUERTO);
             System.out.println("Servidor iniciado.");
+            VtnErrores vtnErrores = new VtnErrores();
+            vtnErrores.setVisible(true);
 
             while (true) {
                 sc = servidor.accept(); //A la espera de un cliente
@@ -28,6 +33,9 @@ public class Servidor {
 
                 Recibir recibir = new Recibir(in);
                 recibir.recibir();
+
+                Comparar comparar = new Comparar(vtnErrores.getTaErrores());
+                comparar.comparar();
 
                 sc.close();
                 System.out.println("Cliente desconectado");

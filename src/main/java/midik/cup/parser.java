@@ -6,10 +6,10 @@
 package midik.cup;
 
 import java_cup.runtime.Symbol;
-import java.util.ArrayList;
 import midik.tablaSimbolos.Termino;
 import midik.tablaSimbolos.Visibilidad;
 import midik.tablaSimbolos.Roles;
+import midik.tablaSimbolos.TablaSimbolos;
 import java_cup.runtime.XMLElement;
 
 /** CUP v0.11b 20160615 (GIT 4ac7450) generated parser.
@@ -1160,20 +1160,22 @@ public class parser extends java_cup.runtime.lr_parser {
   
     private String nombreClase="";
     private String ambitoActual="";
-    private String temp=""; 
+    private String temp="";
+    private TablaSimbolos tablaSimbolos;
+    private javax.swing.JTextArea taErrores; 
 
-    private ArrayList<Termino> tablaSimbolos = new ArrayList<>();
-
-    public ArrayList<Termino> getTablaSimbolos(){
-        return this.tablaSimbolos;
+    public parser(java_cup.runtime.Scanner s, TablaSimbolos tablaSimbolos, javax.swing.JTextArea taErrores){
+        this(s);
+        this.tablaSimbolos = tablaSimbolos;
+        this.taErrores = taErrores;
     }
 
     public void syntax_error(Symbol s){
-        System.out.println("Error sintactico: " + s.value.toString() + " Linea:" + s.right + " Columna:" + s.left);
+        taErrores.append("Error sintactico: " + s.value.toString() + " Linea:" + s.right + " Columna:" + s.left + ". ");
     }
 
     public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception {
-        System.out.println("No se pudo recuperar el analizador. Linea:" + s.right + " Columna:" + s.left);
+        taErrores.append("No se pudo recuperar el analizador. Linea:" + s.right + " Columna:" + s.left + "\n");
     }
 
 
@@ -1261,7 +1263,7 @@ class CUP$parser$actions {
           case 5: // s1 ::= error 
             {
               String RESULT =null;
-		System.out.println("Se esperaba import o la definicion de una clase.");
+		taErrores.append("Se esperaba import o la definicion de una clase. \n");
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s1",0, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -1285,7 +1287,7 @@ class CUP$parser$actions {
           case 7: // s2 ::= error 
             {
               String RESULT =null;
-		System.out.println("Se esperaba el nombre del paquete");
+		taErrores.append("Se esperaba el nombre del paquete \n");
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s2",1, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -1309,7 +1311,7 @@ class CUP$parser$actions {
           case 9: // s3 ::= error 
             {
               String RESULT =null;
-		System.out.println("Se esperaba un punto, punto coma, o el import es muy corto Ej: import pack;");
+		taErrores.append("Se esperaba un punto, punto coma, o el import es muy corto Ej: import pack; \n");
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s3",2, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -1348,7 +1350,7 @@ class CUP$parser$actions {
           case 12: // s4 ::= error 
             {
               String RESULT =null;
-		System.out.println("Se esperaba * o id");
+		taErrores.append("Se esperaba * o id \n");
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s4",3, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -1369,7 +1371,7 @@ class CUP$parser$actions {
           case 14: // s5 ::= error 
             {
               String RESULT =null;
-		System.out.println("Se esperaba un punto y coma");
+		taErrores.append("Se esperaba un punto y coma \n");
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s5",4, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -1405,7 +1407,7 @@ class CUP$parser$actions {
 		int v1left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int v1right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Termino v1 = (Termino)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		v1.setRol(Roles.VARIABLE); v1.setAmbito(ambitoActual); tablaSimbolos.add(v1);
+		v1.setRol(Roles.VARIABLE); v1.setAmbito(ambitoActual); tablaSimbolos.agregarTermino(v1);
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s12",14, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -1417,7 +1419,7 @@ class CUP$parser$actions {
 		int v1left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int v1right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Termino v1 = (Termino)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		v1.setRol(Roles.VARIABLE); v1.setAmbito(ambitoActual); tablaSimbolos.add(v1);
+		v1.setRol(Roles.VARIABLE); v1.setAmbito(ambitoActual); tablaSimbolos.agregarTermino(v1);
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s12",14, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -1477,7 +1479,7 @@ class CUP$parser$actions {
 		int v2left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int v2right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Termino v2 = (Termino)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		if(v2.getRol()==null){v2.setRol(Roles.VARIABLE);} v2.setAmbito(nombreClase); v2.setVisibilidad(Visibilidad.PUBLIC);  tablaSimbolos.add(v2);
+		if(v2.getRol()==null){v2.setRol(Roles.VARIABLE);} v2.setAmbito(nombreClase); v2.setVisibilidad(Visibilidad.PUBLIC);  tablaSimbolos.agregarTermino(v2);
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s7",6, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -1492,7 +1494,7 @@ class CUP$parser$actions {
 		int v2left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int v2right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Termino v2 = (Termino)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		if(v2.getRol()==null){v2.setRol(Roles.VARIABLE);} v2.setAmbito(nombreClase); v2.setVisibilidad(Visibilidad.PRIVATE); tablaSimbolos.add(v2);
+		if(v2.getRol()==null){v2.setRol(Roles.VARIABLE);} v2.setAmbito(nombreClase); v2.setVisibilidad(Visibilidad.PRIVATE); tablaSimbolos.agregarTermino(v2);
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s7",6, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -1507,7 +1509,7 @@ class CUP$parser$actions {
 		int v2left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int v2right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Termino v2 = (Termino)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		if(v2.getRol()==null){v2.setRol(Roles.VARIABLE);} v2.setAmbito(nombreClase); v2.setVisibilidad(Visibilidad.PROTECTED); tablaSimbolos.add(v2);
+		if(v2.getRol()==null){v2.setRol(Roles.VARIABLE);} v2.setAmbito(nombreClase); v2.setVisibilidad(Visibilidad.PROTECTED); tablaSimbolos.agregarTermino(v2);
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s7",6, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -1522,7 +1524,7 @@ class CUP$parser$actions {
 		  if(v1!=null){
                                             if(v1.getRol()==null){v1.setRol(Roles.VARIABLE);}
                                             v1.setAmbito(nombreClase);
-                                            v1.setVisibilidad(Visibilidad.DEFAULT); tablaSimbolos.add(v1);
+                                            v1.setVisibilidad(Visibilidad.DEFAULT); tablaSimbolos.agregarTermino(v1);
                                         }
                                     
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s7",6, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
@@ -1755,7 +1757,7 @@ temp="Metodo/Funcion "+v1;
           case 43: // s10 ::= error 
             {
               Termino RESULT =null;
-		System.out.println("Se esperaba un identificador");
+		taErrores.append("Se esperaba un identificador \n");
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s10",9, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -1824,7 +1826,7 @@ temp="Metodo/Funcion "+v1;
           case 49: // s11 ::= error 
             {
               Termino RESULT =null;
-		System.out.println("Se esperaba punto y coma, signo igual o (");
+		taErrores.append("Se esperaba punto y coma, signo igual o ( \n");
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s11",10, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -1962,7 +1964,7 @@ temp="Metodo/Funcion "+v1;
           case 58: // exp ::= error 
             {
               Termino RESULT =null;
-		System.out.println("Se esperaba un valor");
+		taErrores.append("Se esperaba un valor \n");
               CUP$parser$result = parser.getSymbolFactory().newSymbol("exp",12, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -2084,7 +2086,7 @@ ambitoActual=temp;
           case 69: // s82 ::= error 
             {
               Termino RESULT =null;
-		System.out.println("Se esperaban los parametros o ) ");
+		taErrores.append("Se esperaban los parametros o )  \n");
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s82",95, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -2111,7 +2113,7 @@ ambitoActual=temp;
           case 72: // s84 ::= error 
             {
               Termino RESULT =null;
-		System.out.println("Se esperaba {");
+		taErrores.append("Se esperaba { \n");
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s84",97, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -2129,7 +2131,7 @@ ambitoActual=temp;
           case 74: // s85 ::= error 
             {
               Termino RESULT =null;
-		System.out.println("Se esperaban las sentencias o } ");
+		taErrores.append("Se esperaban las sentencias o }  \n");
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s85",98, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -2174,7 +2176,7 @@ ambitoActual=temp;
 		int v2left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int v2right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Termino v2 = (Termino)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		v2.setTipo(v1); v2.setAmbito(ambitoActual); v2.setRol(Roles.PARAMETRO); tablaSimbolos.add(v2);
+		v2.setTipo(v1); v2.setAmbito(ambitoActual); v2.setRol(Roles.PARAMETRO); tablaSimbolos.agregarTermino(v2);
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s14",16, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -2189,7 +2191,7 @@ ambitoActual=temp;
 		int v2left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int v2right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Termino v2 = (Termino)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		v2.setTipo(v1); v2.setAmbito(ambitoActual); v2.setRol(Roles.PARAMETRO); tablaSimbolos.add(v2);
+		v2.setTipo(v1); v2.setAmbito(ambitoActual); v2.setRol(Roles.PARAMETRO); tablaSimbolos.agregarTermino(v2);
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s14",16, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -2204,7 +2206,7 @@ ambitoActual=temp;
 		int v2left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int v2right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Termino v2 = (Termino)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		v2.setTipo(v1); v2.setAmbito(ambitoActual); v2.setRol(Roles.PARAMETRO); tablaSimbolos.add(v2);
+		v2.setTipo(v1); v2.setAmbito(ambitoActual); v2.setRol(Roles.PARAMETRO); tablaSimbolos.agregarTermino(v2);
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s14",16, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -2219,7 +2221,7 @@ ambitoActual=temp;
 		int v2left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int v2right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Termino v2 = (Termino)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		v2.setTipo(v1); v2.setAmbito(ambitoActual); v2.setRol(Roles.PARAMETRO); tablaSimbolos.add(v2);
+		v2.setTipo(v1); v2.setAmbito(ambitoActual); v2.setRol(Roles.PARAMETRO); tablaSimbolos.agregarTermino(v2);
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s14",16, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -2234,7 +2236,7 @@ ambitoActual=temp;
 		int v2left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int v2right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Termino v2 = (Termino)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		v2.setTipo(v1); v2.setAmbito(ambitoActual); v2.setRol(Roles.PARAMETRO); tablaSimbolos.add(v2);
+		v2.setTipo(v1); v2.setAmbito(ambitoActual); v2.setRol(Roles.PARAMETRO); tablaSimbolos.agregarTermino(v2);
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s14",16, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -2249,7 +2251,7 @@ ambitoActual=temp;
 		int v2left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int v2right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Termino v2 = (Termino)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		v2.setTipo(v1); v2.setAmbito(ambitoActual); v2.setRol(Roles.PARAMETRO); tablaSimbolos.add(v2);
+		v2.setTipo(v1); v2.setAmbito(ambitoActual); v2.setRol(Roles.PARAMETRO); tablaSimbolos.agregarTermino(v2);
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s14",16, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -2270,7 +2272,7 @@ ambitoActual=temp;
           case 85: // s15 ::= error 
             {
               Termino RESULT =null;
-		System.out.println("Se esperaba un id");
+		taErrores.append("Se esperaba un id \n");
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s15",17, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -2324,7 +2326,7 @@ ambitoActual=temp;
           case 91: // s106 ::= error 
             {
               String RESULT =null;
-		System.out.println("Se esperaba un valor y punto y coma");
+		taErrores.append("Se esperaba un valor y punto y coma \n");
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s106",21, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -2378,7 +2380,7 @@ ambitoActual=temp;
           case 97: // s110 ::= error 
             {
               Termino RESULT =null;
-		System.out.println("Se esperaban los argumentos o )");
+		taErrores.append("Se esperaban los argumentos o ) \n");
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s110",25, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -2405,7 +2407,7 @@ ambitoActual=temp;
           case 100: // s112 ::= error 
             {
               Termino RESULT =null;
-		System.out.println("Se esperaba punto y coma ");
+		taErrores.append("Se esperaba punto y coma  \n");
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s112",27, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -2486,7 +2488,7 @@ ambitoActual=temp;
           case 107: // s114 ::= error 
             {
               String RESULT =null;
-		System.out.println("Se esperaba argumentos o )");
+		taErrores.append("Se esperaba argumentos o ) \n");
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s114",29, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -2522,7 +2524,7 @@ ambitoActual=temp;
           case 110: // s18 ::= error 
             {
               String RESULT =null;
-		System.out.println("Se esperaba ( ");
+		taErrores.append("Se esperaba (  \n");
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s18",32, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -2540,7 +2542,7 @@ ambitoActual=temp;
           case 112: // s19 ::= error 
             {
               String RESULT =null;
-		System.out.println("Se esperaba una condicion valida");
+		taErrores.append("Se esperaba una condicion valida \n");
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s19",33, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -2765,7 +2767,7 @@ ambitoActual=temp;
           case 137: // s20 ::= error 
             {
               String RESULT =null;
-		System.out.println("Se esperaba el ) ");
+		taErrores.append("Se esperaba el )  \n");
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s20",34, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -2783,7 +2785,7 @@ ambitoActual=temp;
           case 139: // s21 ::= error 
             {
               String RESULT =null;
-		System.out.println("Se esperaba { ");
+		taErrores.append("Se esperaba {  \n");
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s21",35, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -2801,7 +2803,7 @@ ambitoActual=temp;
           case 141: // s22 ::= error 
             {
               String RESULT =null;
-		System.out.println("Se esperaban las sentencias o } ");
+		taErrores.append("Se esperaban las sentencias o }  \n");
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s22",36, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -3149,7 +3151,7 @@ ambitoActual=temp;
           case 172: // s32 ::= error 
             {
               String RESULT =null;
-		System.out.println("Se esperaba { ");
+		taErrores.append("Se esperaba {  \n");
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s32",46, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -3167,7 +3169,7 @@ ambitoActual=temp;
           case 174: // s33 ::= error 
             {
               String RESULT =null;
-		System.out.println("Se esperaban las sentencias o } ");
+		taErrores.append("Se esperaban las sentencias o }  \n");
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s33",47, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -3212,7 +3214,7 @@ ambitoActual=temp;
           case 178: // s36 ::= error 
             {
               String RESULT =null;
-		System.out.println("Se esperaba ( ");
+		taErrores.append("Se esperaba (  \n");
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s36",53, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -3230,7 +3232,7 @@ ambitoActual=temp;
           case 180: // s37 ::= error 
             {
               String RESULT =null;
-		System.out.println("Se esperaba una condicion valida");
+		taErrores.append("Se esperaba una condicion valida \n");
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s37",54, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -3248,7 +3250,7 @@ ambitoActual=temp;
           case 182: // s38 ::= error 
             {
               String RESULT =null;
-		System.out.println("Se esperaba ) ");
+		taErrores.append("Se esperaba )  \n");
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s38",55, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -3266,7 +3268,7 @@ ambitoActual=temp;
           case 184: // s39 ::= error 
             {
               String RESULT =null;
-		System.out.println("Se esperaba { ");
+		taErrores.append("Se esperaba {  \n");
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s39",56, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -3284,7 +3286,7 @@ ambitoActual=temp;
           case 186: // s40 ::= error 
             {
               String RESULT =null;
-		System.out.println("Se esperaban las sentencias o } ");
+		taErrores.append("Se esperaban las sentencias o }  \n");
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s40",57, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -3320,7 +3322,7 @@ ambitoActual=temp;
           case 190: // s43 ::= error 
             {
               String RESULT =null;
-		System.out.println("Se esperaba { ");
+		taErrores.append("Se esperaba {  \n");
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s43",60, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -3338,7 +3340,7 @@ ambitoActual=temp;
           case 192: // s44 ::= error 
             {
               String RESULT =null;
-		System.out.println("Se esperaban las sentencias o } ");
+		taErrores.append("Se esperaban las sentencias o }  \n");
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s44",61, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -3365,7 +3367,7 @@ ambitoActual=temp;
           case 195: // s46 ::= error 
             {
               String RESULT =null;
-		System.out.println("Se esperaba while ");
+		taErrores.append("Se esperaba while  \n");
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s46",63, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -3383,7 +3385,7 @@ ambitoActual=temp;
           case 197: // s47 ::= error 
             {
               String RESULT =null;
-		System.out.println("Se esperaba ( ");
+		taErrores.append("Se esperaba (  \n");
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s47",64, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -3401,7 +3403,7 @@ ambitoActual=temp;
           case 199: // s48 ::= error 
             {
               String RESULT =null;
-		System.out.println("Se esperaba una condicion valida");
+		taErrores.append("Se esperaba una condicion valida \n");
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s48",65, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -3419,7 +3421,7 @@ ambitoActual=temp;
           case 201: // s49 ::= error 
             {
               String RESULT =null;
-		System.out.println("Se esperaba ) ");
+		taErrores.append("Se esperaba )  \n");
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s49",66, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -3437,7 +3439,7 @@ ambitoActual=temp;
           case 203: // s50 ::= error 
             {
               String RESULT =null;
-		System.out.println("Se esperaba el ; ");
+		taErrores.append("Se esperaba el ;  \n");
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s50",67, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -3464,7 +3466,7 @@ ambitoActual=temp;
           case 206: // s52 ::= error 
             {
               String RESULT =null;
-		System.out.println("Se esperaba ( ");
+		taErrores.append("Se esperaba (  \n");
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s52",69, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -3482,7 +3484,7 @@ ambitoActual=temp;
           case 208: // s53 ::= error 
             {
               String RESULT =null;
-		System.out.println("Se esperaba unos limites validos");
+		taErrores.append("Se esperaba unos limites validos \n");
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s53",70, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -3500,7 +3502,7 @@ ambitoActual=temp;
           case 210: // s54 ::= error 
             {
               String RESULT =null;
-		System.out.println("Se esperaba ) ");
+		taErrores.append("Se esperaba )  \n");
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s54",71, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -3518,7 +3520,7 @@ ambitoActual=temp;
           case 212: // s55 ::= error 
             {
               String RESULT =null;
-		System.out.println("Se esperaba {");
+		taErrores.append("Se esperaba { \n");
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s55",72, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -3536,7 +3538,7 @@ ambitoActual=temp;
           case 214: // s56 ::= error 
             {
               String RESULT =null;
-		System.out.println("Se esperaban las sentencias o } ");
+		taErrores.append("Se esperaban las sentencias o }  \n");
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s56",73, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -3689,7 +3691,7 @@ ambitoActual=temp;
           case 224: // s59 ::= error 
             {
               String RESULT =null;
-		System.out.println("Se esperaba un valor");
+		taErrores.append("Se esperaba un valor \n");
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s59",76, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -3752,7 +3754,7 @@ ambitoActual=temp;
           case 230: // s63 ::= error 
             {
               String RESULT =null;
-		System.out.println("Se esperaba (");
+		taErrores.append("Se esperaba ( \n");
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s63",80, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -3770,7 +3772,7 @@ ambitoActual=temp;
           case 232: // s64 ::= error 
             {
               String RESULT =null;
-		System.out.println("Se esperaba un id");
+		taErrores.append("Se esperaba un id \n");
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s64",81, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -3788,7 +3790,7 @@ ambitoActual=temp;
           case 234: // s65 ::= error 
             {
               String RESULT =null;
-		System.out.println("Se esperaba )");
+		taErrores.append("Se esperaba ) \n");
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s65",82, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -3806,7 +3808,7 @@ ambitoActual=temp;
           case 236: // s66 ::= error 
             {
               String RESULT =null;
-		System.out.println("Se esperaba {");
+		taErrores.append("Se esperaba { \n");
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s66",83, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -3824,7 +3826,7 @@ ambitoActual=temp;
           case 238: // s67 ::= error 
             {
               String RESULT =null;
-		System.out.println("Se esperaban los casos o }");
+		taErrores.append("Se esperaban los casos o } \n");
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s67",84, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -3878,7 +3880,7 @@ ambitoActual=temp;
           case 244: // s70 ::= error 
             {
               String RESULT =null;
-		System.out.println("Se esperaba un valor");
+		taErrores.append("Se esperaba un valor \n");
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s70",87, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -3896,7 +3898,7 @@ ambitoActual=temp;
           case 246: // s71 ::= error 
             {
               String RESULT =null;
-		System.out.println("Se esperaban dos puntos");
+		taErrores.append("Se esperaban dos puntos \n");
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s71",88, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -3914,7 +3916,7 @@ ambitoActual=temp;
           case 248: // s72 ::= error 
             {
               String RESULT =null;
-		System.out.println("Se esperaban las sentencias,case,break,default o }");
+		taErrores.append("Se esperaban las sentencias,case,break,default o } \n");
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s72",89, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -3950,7 +3952,7 @@ ambitoActual=temp;
           case 252: // s74 ::= error 
             {
               String RESULT =null;
-		System.out.println("Se esperaba punto y coma");
+		taErrores.append("Se esperaba punto y coma \n");
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s74",91, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -3977,7 +3979,7 @@ ambitoActual=temp;
           case 255: // s76 ::= error 
             {
               String RESULT =null;
-		System.out.println("Se esperaba dos puntos");
+		taErrores.append("Se esperaba dos puntos \n");
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s76",93, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -3992,7 +3994,7 @@ ambitoActual=temp;
 		int v2left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int v2right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Termino v2 = (Termino)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		v2.setVisibilidad(Visibilidad.PUBLIC); tablaSimbolos.add(v2);
+		v2.setVisibilidad(Visibilidad.PUBLIC); tablaSimbolos.agregarTermino(v2);
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s95",106, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -4004,7 +4006,7 @@ ambitoActual=temp;
 		int v1left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int v1right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Termino v1 = (Termino)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		v1.setVisibilidad(Visibilidad.DEFAULT); tablaSimbolos.add(v1);
+		v1.setVisibilidad(Visibilidad.DEFAULT); tablaSimbolos.agregarTermino(v1);
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s95",106, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -4054,7 +4056,7 @@ nombreClase="Clase "+v1;
           case 261: // s97 ::= error 
             {
               Termino RESULT =null;
-		System.out.println("Se esperaba el nombre de la clase");
+		taErrores.append("Se esperaba el nombre de la clase \n");
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s97",108, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -4072,7 +4074,7 @@ nombreClase="Clase "+v1;
           case 263: // s98 ::= error 
             {
               Termino RESULT =null;
-		System.out.println("Se esperaba {");
+		taErrores.append("Se esperaba { \n");
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s98",109, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -4099,7 +4101,7 @@ nombreClase="Clase "+v1;
           case 266: // s99 ::= error 
             {
               Termino RESULT =null;
-		System.out.println("Se esperaban los miembro de la clase, constructor o }");
+		taErrores.append("Se esperaban los miembro de la clase, constructor o } \n");
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s99",110, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -4126,7 +4128,7 @@ nombreClase="Clase "+v1;
           case 269: // s90 ::= error 
             {
               String RESULT =null;
-		System.out.println("Se esperaban los parametros o ) ");
+		taErrores.append("Se esperaban los parametros o )  \n");
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s90",101, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -4153,7 +4155,7 @@ nombreClase="Clase "+v1;
           case 272: // s92 ::= error 
             {
               String RESULT =null;
-		System.out.println("Se esperaba { ");
+		taErrores.append("Se esperaba {  \n");
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s92",103, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -4171,7 +4173,7 @@ nombreClase="Clase "+v1;
           case 274: // s93 ::= error 
             {
               String RESULT =null;
-		System.out.println("Se esperaban las sentencias o }");
+		taErrores.append("Se esperaban las sentencias o } \n");
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s93",104, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;

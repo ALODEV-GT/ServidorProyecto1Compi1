@@ -1,28 +1,30 @@
 package midik.cup;
 import java_cup.runtime.Symbol;
-import java.util.ArrayList;
 import midik.tablaSimbolos.Termino;
 import midik.tablaSimbolos.Visibilidad;
 import midik.tablaSimbolos.Roles;
+import midik.tablaSimbolos.TablaSimbolos;
 
 parser code
 {:  
     private String nombreClase="";
     private String ambitoActual="";
-    private String temp=""; 
+    private String temp="";
+    private TablaSimbolos tablaSimbolos;
+    private javax.swing.JTextArea taErrores; 
 
-    private ArrayList<Termino> tablaSimbolos = new ArrayList<>();
-
-    public ArrayList<Termino> getTablaSimbolos(){
-        return this.tablaSimbolos;
+    public parser(java_cup.runtime.Scanner s, TablaSimbolos tablaSimbolos, javax.swing.JTextArea taErrores){
+        this(s);
+        this.tablaSimbolos = tablaSimbolos;
+        this.taErrores = taErrores;
     }
 
     public void syntax_error(Symbol s){
-        System.out.println("Error sintactico: " + s.value.toString() + " Linea:" + s.right + " Columna:" + s.left);
+        taErrores.append("Error sintactico: " + s.value.toString() + " Linea:" + s.right + " Columna:" + s.left + ". ");
     }
 
     public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception {
-        System.out.println("No se pudo recuperar el analizador. Linea:" + s.right + " Columna:" + s.left);
+        taErrores.append("No se pudo recuperar el analizador. Linea:" + s.right + " Columna:" + s.left + "\n");
     }
 :};
 
@@ -67,20 +69,20 @@ s0::= s1 s0
 
 //GRAMATICA: IMPORT -->INICIO
 s1::= IMPORT:v1 s2:v2
-| error                             {:System.out.println("Se esperaba import o la definicion de una clase.");:}
+| error                             {:taErrores.append("Se esperaba import o la definicion de una clase. \n");:}
 ;
 s2::= ID:v1 s3:v2
-| error                             {:System.out.println("Se esperaba el nombre del paquete");:}
+| error                             {:taErrores.append("Se esperaba el nombre del paquete \n");:}
 ;
 s3::= PUNTO:v1 s4:v2
-| error                             {:System.out.println("Se esperaba un punto, punto coma, o el import es muy corto Ej: import pack;");:}
+| error                             {:taErrores.append("Se esperaba un punto, punto coma, o el import es muy corto Ej: import pack; \n");:}
 ;
 s4::= POR:v1 s5:v2
 | ID:v1 s6:v2
-| error                             {:System.out.println("Se esperaba * o id");:}
+| error                             {:taErrores.append("Se esperaba * o id \n");:}
 ;
 s5::= P_COMA:v1
-| error                             {:System.out.println("Se esperaba un punto y coma");:}
+| error                             {:taErrores.append("Se esperaba un punto y coma \n");:}
 ;
 s6::= P_COMA:v1
 | s3:v1
@@ -90,8 +92,8 @@ s6::= P_COMA:v1
 
 
 //GRAMATICA: DECLARACION/ASIGNACION DE VARIABLES -->INICIO
-s12::= FINAL s9:v1                                  {:v1.setRol(Roles.VARIABLE); v1.setAmbito(ambitoActual); tablaSimbolos.add(v1);:}
-|s9:v1                                              {:v1.setRol(Roles.VARIABLE); v1.setAmbito(ambitoActual); tablaSimbolos.add(v1);:}
+s12::= FINAL s9:v1                                  {:v1.setRol(Roles.VARIABLE); v1.setAmbito(ambitoActual); tablaSimbolos.agregarTermino(v1);:}
+|s9:v1                                              {:v1.setRol(Roles.VARIABLE); v1.setAmbito(ambitoActual); tablaSimbolos.agregarTermino(v1);:}
 |THIS PUNTO ID s13                      
 |ID s13                                       
 ;
@@ -103,13 +105,13 @@ s13::= ASIGNACION exp P_COMA
 //GRAMATICA: DECLARACION/ASIGNACION DE VARIABLES -->FIN
 
 //GRAMATICA: DECLARACION DE ATRIBUTOS -->INICIO
-s7::= PUBLIC:v1 s101:v2             {:if(v2.getRol()==null){v2.setRol(Roles.VARIABLE);} v2.setAmbito(nombreClase); v2.setVisibilidad(Visibilidad.PUBLIC);  tablaSimbolos.add(v2);:}
-| PRIVATE:v1 s101:v2                {:if(v2.getRol()==null){v2.setRol(Roles.VARIABLE);} v2.setAmbito(nombreClase); v2.setVisibilidad(Visibilidad.PRIVATE); tablaSimbolos.add(v2);:}
-| PROTECTED:v1 s101:v2              {:if(v2.getRol()==null){v2.setRol(Roles.VARIABLE);} v2.setAmbito(nombreClase); v2.setVisibilidad(Visibilidad.PROTECTED); tablaSimbolos.add(v2);:}
+s7::= PUBLIC:v1 s101:v2             {:if(v2.getRol()==null){v2.setRol(Roles.VARIABLE);} v2.setAmbito(nombreClase); v2.setVisibilidad(Visibilidad.PUBLIC);  tablaSimbolos.agregarTermino(v2);:}
+| PRIVATE:v1 s101:v2                {:if(v2.getRol()==null){v2.setRol(Roles.VARIABLE);} v2.setAmbito(nombreClase); v2.setVisibilidad(Visibilidad.PRIVATE); tablaSimbolos.agregarTermino(v2);:}
+| PROTECTED:v1 s101:v2              {:if(v2.getRol()==null){v2.setRol(Roles.VARIABLE);} v2.setAmbito(nombreClase); v2.setVisibilidad(Visibilidad.PROTECTED); tablaSimbolos.agregarTermino(v2);:}
 | s101:v1                           {:  if(v1!=null){
                                             if(v1.getRol()==null){v1.setRol(Roles.VARIABLE);}
                                             v1.setAmbito(nombreClase);
-                                            v1.setVisibilidad(Visibilidad.DEFAULT); tablaSimbolos.add(v1);
+                                            v1.setVisibilidad(Visibilidad.DEFAULT); tablaSimbolos.agregarTermino(v1);
                                         }
                                     :}
 ;
@@ -134,7 +136,7 @@ s10::= ID:v1 {:temp="Metodo/Funcion "+v1;:} s104:v2   {:
                                                     v2.setNombre(v1); RESULT=v2;    
                                                 }
                                             :}
-| error                                 {:System.out.println("Se esperaba un identificador");:}
+| error                                 {:taErrores.append("Se esperaba un identificador \n");:}
 ;
 s104::= s11:v1                         {:RESULT=null;:}                                
 |s81:v1                                {:RESULT=v1;:}
@@ -142,7 +144,7 @@ s104::= s11:v1                         {:RESULT=null;:}
 s11::= s115:v1                                      
 | ASIGNACION exp s115:v1                            
 | ASIGNACION NEW ID PARENTESIS_A argumento PARENTESIS_C P_COMA:v1    
-| error                                             {:System.out.println("Se esperaba punto y coma, signo igual o (");:}
+| error                                             {:taErrores.append("Se esperaba punto y coma, signo igual o ( \n");:}
 ;
 s115::= COMA:v1 s10:v2              
 | P_COMA:v1                         
@@ -153,7 +155,7 @@ exp ::= exp:v1 MAS:v2 exp:v3
 | exp:v1 DIVISION:v2 exp:v3         
 | PARENTESIS_A:v1 exp:v2 PARENTESIS_C:v3     
 | valor:v1                                   
-| error                                             {:System.out.println("Se esperaba un valor");:}
+| error                                             {:taErrores.append("Se esperaba un valor \n");:}
 ;
 valor::= CADENA:v1                  
 |TRUE:v1                            
@@ -169,15 +171,15 @@ valor::= CADENA:v1
 s81::= PARENTESIS_A {:ambitoActual=temp;:} s82   {:Termino term = new Termino(); term.setRol(Roles.METODO_FUNCION); RESULT=term;:}
 ;
 s82::= parametro s83
-|error                                           {:System.out.println("Se esperaban los parametros o ) ");:}
+|error                                           {:taErrores.append("Se esperaban los parametros o )  \n");:}
 ;
 s83::= PARENTESIS_C s84
 ;
 s84::= LLAVE_A s85
-|error                                           {:System.out.println("Se esperaba {");:}
+|error                                           {:taErrores.append("Se esperaba { \n");:}
 ;
 s85::= sentences s86
-|error                                           {:System.out.println("Se esperaban las sentencias o } ");:}
+|error                                           {:taErrores.append("Se esperaban las sentencias o }  \n");:}
 ;
 s86::= LLAVE_C
 ;
@@ -187,15 +189,15 @@ s86::= LLAVE_C
 parametro::= s14:v1                               {::}
 |
 ;
-s14::= INT:v1 s15:v2                              {:v2.setTipo(v1); v2.setAmbito(ambitoActual); v2.setRol(Roles.PARAMETRO); tablaSimbolos.add(v2);:}
-|BOOLEAN:v1 s15:v2                                {:v2.setTipo(v1); v2.setAmbito(ambitoActual); v2.setRol(Roles.PARAMETRO); tablaSimbolos.add(v2);:}
-|STRING:v1 s15:v2                                 {:v2.setTipo(v1); v2.setAmbito(ambitoActual); v2.setRol(Roles.PARAMETRO); tablaSimbolos.add(v2);:}
-|CHAR:v1 s15:v2                                   {:v2.setTipo(v1); v2.setAmbito(ambitoActual); v2.setRol(Roles.PARAMETRO); tablaSimbolos.add(v2);:}
-|DOUBLE:v1 s15:v2                                 {:v2.setTipo(v1); v2.setAmbito(ambitoActual); v2.setRol(Roles.PARAMETRO); tablaSimbolos.add(v2);:}
-|ID:v1 s15:v2                                     {:v2.setTipo(v1); v2.setAmbito(ambitoActual); v2.setRol(Roles.PARAMETRO); tablaSimbolos.add(v2);:}
+s14::= INT:v1 s15:v2                              {:v2.setTipo(v1); v2.setAmbito(ambitoActual); v2.setRol(Roles.PARAMETRO); tablaSimbolos.agregarTermino(v2);:}
+|BOOLEAN:v1 s15:v2                                {:v2.setTipo(v1); v2.setAmbito(ambitoActual); v2.setRol(Roles.PARAMETRO); tablaSimbolos.agregarTermino(v2);:}
+|STRING:v1 s15:v2                                 {:v2.setTipo(v1); v2.setAmbito(ambitoActual); v2.setRol(Roles.PARAMETRO); tablaSimbolos.agregarTermino(v2);:}
+|CHAR:v1 s15:v2                                   {:v2.setTipo(v1); v2.setAmbito(ambitoActual); v2.setRol(Roles.PARAMETRO); tablaSimbolos.agregarTermino(v2);:}
+|DOUBLE:v1 s15:v2                                 {:v2.setTipo(v1); v2.setAmbito(ambitoActual); v2.setRol(Roles.PARAMETRO); tablaSimbolos.agregarTermino(v2);:}
+|ID:v1 s15:v2                                     {:v2.setTipo(v1); v2.setAmbito(ambitoActual); v2.setRol(Roles.PARAMETRO); tablaSimbolos.agregarTermino(v2);:}
 ;
 s15::= ID:v1 s16                                  {:Termino term = new Termino(); term.setNombre(v1); RESULT=term;:}
-|error                                            {:System.out.println("Se esperaba un id");:}
+|error                                            {:taErrores.append("Se esperaba un id \n");:}
 ;
 s16::= COMA s14
 |
@@ -209,7 +211,7 @@ s105::= RETURN s106
 ;
 s106::= valor s107
 | ID s107
-| error {:System.out.println("Se esperaba un valor y punto y coma");:}
+| error {:taErrores.append("Se esperaba un valor y punto y coma \n");:}
 ;
 s107::= P_COMA
 ;
@@ -222,12 +224,12 @@ s108::= ID s109
 s109::= PARENTESIS_A s110
 ;
 s110::= argumento s111
-| error {:System.out.println("Se esperaban los argumentos o )");:}
+| error {:taErrores.append("Se esperaban los argumentos o ) \n");:}
 ;
 s111::= PARENTESIS_C s112
 ;
 s112::= P_COMA
-| error {:System.out.println("Se esperaba punto y coma ");:}
+| error {:taErrores.append("Se esperaba punto y coma  \n");:}
 ;
 //GRAMATICA: LLAMADA A A METODOS/FUNCIONES --> FIN
 
@@ -240,7 +242,7 @@ s113::= ID:v1 s114:v2       {:RESULT=v1+" "+v2;:}
 ;
 s114::= COMA:v1 s113:v2     {:RESULT=v1+" "+v2;:}
 |                           {:RESULT="";:}
-|error                                            {:System.out.println("Se esperaba argumentos o )");:}
+|error                                            {:taErrores.append("Se esperaba argumentos o ) \n");:}
 ;
 //GRAMATICA: ARGUMENTOS -->FIN
 
@@ -248,10 +250,10 @@ s114::= COMA:v1 s113:v2     {:RESULT=v1+" "+v2;:}
 s17::=IF:v1 s18:v2
 ;
 s18::=PARENTESIS_A:v1 s19
-| error {:System.out.println("Se esperaba ( ");:}
+| error {:taErrores.append("Se esperaba (  \n");:}
 ;
 s19::= condicion s20
-| error {:System.out.println("Se esperaba una condicion valida");:}
+| error {:taErrores.append("Se esperaba una condicion valida \n");:}
 ;
 condicion::= NOT s24 s25
 | s24 s25
@@ -284,13 +286,13 @@ s24::= TRUE
 | PARENTESIS_A condicion PARENTESIS_C
 ;
 s20::=PARENTESIS_C s21
-| error {:System.out.println("Se esperaba el ) ");:}
+| error {:taErrores.append("Se esperaba el )  \n");:}
 ;
 s21::= LLAVE_A s22
-| error {:System.out.println("Se esperaba { ");:}
+| error {:taErrores.append("Se esperaba {  \n");:}
 ;
 s22::=sentences s23
-| error {:System.out.println("Se esperaban las sentencias o } ");:}
+| error {:taErrores.append("Se esperaban las sentencias o }  \n");:}
 ;
 sentences::= s17 sentences
 | s35 sentences
@@ -328,10 +330,10 @@ s31::= ELSE s32
 |
 ;
 s32::= LLAVE_A s33
-| error {:System.out.println("Se esperaba { ");:}
+| error {:taErrores.append("Se esperaba {  \n");:}
 ;
 s33::= sentences s34
-| error {:System.out.println("Se esperaban las sentencias o } ");:}
+| error {:taErrores.append("Se esperaban las sentencias o }  \n");:}
 ;
 s34::= LLAVE_C
 ;
@@ -341,19 +343,19 @@ s34::= LLAVE_C
 s35::=WHILE:v1 s36:v2
 ;
 s36::=PARENTESIS_A:v1 s37
-| error {:System.out.println("Se esperaba ( ");:}
+| error {:taErrores.append("Se esperaba (  \n");:}
 ;
 s37::= condicion s38
-| error {:System.out.println("Se esperaba una condicion valida");:}
+| error {:taErrores.append("Se esperaba una condicion valida \n");:}
 ;
 s38::=PARENTESIS_C s39
-| error {:System.out.println("Se esperaba ) ");:}
+| error {:taErrores.append("Se esperaba )  \n");:}
 ;
 s39::= LLAVE_A s40
-| error {:System.out.println("Se esperaba { ");:}
+| error {:taErrores.append("Se esperaba {  \n");:}
 ;
 s40::=sentences s41
-| error {:System.out.println("Se esperaban las sentencias o } ");:}
+| error {:taErrores.append("Se esperaban las sentencias o }  \n");:}
 ;
 s41::= LLAVE_C
 ;
@@ -363,27 +365,27 @@ s41::= LLAVE_C
 s42::= DO s43
 ;
 s43::= LLAVE_A s44
-| error {:System.out.println("Se esperaba { ");:}
+| error {:taErrores.append("Se esperaba {  \n");:}
 ;
 s44::= sentences s45
-| error {:System.out.println("Se esperaban las sentencias o } ");:}
+| error {:taErrores.append("Se esperaban las sentencias o }  \n");:}
 ;
 s45::= LLAVE_C s46
 ;
 s46::= WHILE s47
-| error {:System.out.println("Se esperaba while ");:}
+| error {:taErrores.append("Se esperaba while  \n");:}
 ;
 s47::= PARENTESIS_A s48
-| error {:System.out.println("Se esperaba ( ");:}
+| error {:taErrores.append("Se esperaba (  \n");:}
 ;
 s48::= condicion s49
-| error {:System.out.println("Se esperaba una condicion valida");:}
+| error {:taErrores.append("Se esperaba una condicion valida \n");:}
 ;
 s49::= PARENTESIS_C s50
-| error {:System.out.println("Se esperaba ) ");:}
+| error {:taErrores.append("Se esperaba )  \n");:}
 ;
 s50::= P_COMA
-| error {:System.out.println("Se esperaba el ; ");:}
+| error {:taErrores.append("Se esperaba el ;  \n");:}
 ;
 //GRAMATICA: DO WHILE -->FIN
 
@@ -391,19 +393,19 @@ s50::= P_COMA
 s51::= FOR s52
 ;
 s52::= PARENTESIS_A s53
-| error {:System.out.println("Se esperaba ( ");:}
+| error {:taErrores.append("Se esperaba (  \n");:}
 ;
 s53::= s58 s54
-| error {:System.out.println("Se esperaba unos limites validos");:}
+| error {:taErrores.append("Se esperaba unos limites validos \n");:}
 ;
 s54::= PARENTESIS_C s55
-| error {:System.out.println("Se esperaba ) ");:}
+| error {:taErrores.append("Se esperaba )  \n");:}
 ;
 s55::= LLAVE_A s56
-| error {:System.out.println("Se esperaba {");:}
+| error {:taErrores.append("Se esperaba { \n");:}
 ;
 s56::= sentences s57
-| error {:System.out.println("Se esperaban las sentencias o } ");:}
+| error {:taErrores.append("Se esperaban las sentencias o }  \n");:}
 ;
 s57::= LLAVE_C
 ;
@@ -417,7 +419,7 @@ s59 ::= s59:v1 MAS s59:v2
 | s59:v1 MENOS s59:v2
 | PARENTESIS_A:v1 s59:v2 PARENTESIS_C:v3
 | s61:v1
-| error                                             {:System.out.println("Se esperaba un valor");:}
+| error                                             {:taErrores.append("Se esperaba un valor \n");:}
 ;
 s61::= ID:v1
 |ENTERO:v1
@@ -429,19 +431,19 @@ s61::= ID:v1
 s62::= SWITCH s63
 ;
 s63::= PARENTESIS_A s64
-| error                                             {:System.out.println("Se esperaba (");:}
+| error                                             {:taErrores.append("Se esperaba ( \n");:}
 ;
 s64::= ID s65
-| error                                             {:System.out.println("Se esperaba un id");:}
+| error                                             {:taErrores.append("Se esperaba un id \n");:}
 ;
 s65::= PARENTESIS_C s66
-| error                                             {:System.out.println("Se esperaba )");:}
+| error                                             {:taErrores.append("Se esperaba ) \n");:}
 ;
 s66::= LLAVE_A s67
-| error                                             {:System.out.println("Se esperaba {");:}
+| error                                             {:taErrores.append("Se esperaba { \n");:}
 ;
 s67::= s68
-| error                                             {:System.out.println("Se esperaban los casos o }");:}
+| error                                             {:taErrores.append("Se esperaban los casos o } \n");:}
 ;
 s68::= CASE s69 s68
 | s75 LLAVE_C
@@ -450,42 +452,42 @@ s68::= CASE s69 s68
 s69::= s70 s71
 ;
 s70::= valor
-| error                                             {:System.out.println("Se esperaba un valor");:}
+| error                                             {:taErrores.append("Se esperaba un valor \n");:}
 ;
 s71::= DOS_PUNTOS s72
-| error                                             {:System.out.println("Se esperaban dos puntos");:}
+| error                                             {:taErrores.append("Se esperaban dos puntos \n");:}
 ;
 s72::= sentences s73
-| error                                             {:System.out.println("Se esperaban las sentencias,case,break,default o }");:}
+| error                                             {:taErrores.append("Se esperaban las sentencias,case,break,default o } \n");:}
 ;
 s73::= BREAK s74
 |
 ;
 s74::= P_COMA
-| error                                             {:System.out.println("Se esperaba punto y coma");:}
+| error                                             {:taErrores.append("Se esperaba punto y coma \n");:}
 ;
 s75::= DEFAULT s76
 ;
 s76::= DOS_PUNTOS sentences
-| error                                             {:System.out.println("Se esperaba dos puntos");:}
+| error                                             {:taErrores.append("Se esperaba dos puntos \n");:}
 ;
 //GRAMATICA: SWITCH -->FIN
 
 //GRAMATICA: CLASE -->INICIO
-s95::= PUBLIC:v1 s96:v2                                 {:v2.setVisibilidad(Visibilidad.PUBLIC); tablaSimbolos.add(v2);:}
-|s96:v1                                                 {:v1.setVisibilidad(Visibilidad.DEFAULT); tablaSimbolos.add(v1);:}
+s95::= PUBLIC:v1 s96:v2                                 {:v2.setVisibilidad(Visibilidad.PUBLIC); tablaSimbolos.agregarTermino(v2);:}
+|s96:v1                                                 {:v1.setVisibilidad(Visibilidad.DEFAULT); tablaSimbolos.agregarTermino(v1);:}
 ;
 s96::= CLASS:v1 s97:v2                                 {:v2.setRol(Roles.CLASE); RESULT=v2;:}
 ;
 s97::= ID:v1 {:nombreClase="Clase "+v1;:} s98          {:Termino term = new Termino(); term.setNombre(v1); ambitoActual="Clase "+v1; RESULT=term;:} 
-|error                                           {:System.out.println("Se esperaba el nombre de la clase");:}
+|error                                           {:taErrores.append("Se esperaba el nombre de la clase \n");:}
 ;
 s98::= LLAVE_A s99
-|error                                           {:System.out.println("Se esperaba {");:}
+|error                                           {:taErrores.append("Se esperaba { \n");:}
 ;
 s99::= s7 s99
 | LLAVE_C
-|error                                           {:System.out.println("Se esperaban los miembro de la clase, constructor o }");:}
+|error                                           {:taErrores.append("Se esperaban los miembro de la clase, constructor o } \n");:}
 ;
 //GRAMATICA: CLASE -->FIN
 
@@ -493,15 +495,15 @@ s99::= s7 s99
 s89::= PARENTESIS_A s90
 ;
 s90::= parametro s91
-|error                                           {:System.out.println("Se esperaban los parametros o ) ");:}
+|error                                           {:taErrores.append("Se esperaban los parametros o )  \n");:}
 ;
 s91::= PARENTESIS_C s92
 ;
 s92::= LLAVE_A s93
-|error                                           {:System.out.println("Se esperaba { ");:}
+|error                                           {:taErrores.append("Se esperaba {  \n");:}
 ;
 s93::= sentences s94
-|error                                           {:System.out.println("Se esperaban las sentencias o }");:}
+|error                                           {:taErrores.append("Se esperaban las sentencias o } \n");:}
 ;
 s94::= LLAVE_C
 ;

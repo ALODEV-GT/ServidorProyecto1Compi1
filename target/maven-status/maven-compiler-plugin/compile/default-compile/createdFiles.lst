@@ -1,0 +1,14 @@
+midik/cup/parser$CUP$parser$actions.class
+midik/cup/sym.class
+midik/jflex/AnalizadorLexico.class
+midik/sockets/Recibir.class
+midik/comparacion/Comparar.class
+midik/tablaSimbolos/TablaSimbolos.class
+midik/tablaSimbolos/Termino.class
+midik/cup/parser.class
+midik/sockets/Servidor.class
+midik/test/Main.class
+midik/tablaSimbolos/Visibilidad.class
+midik/frontend/VtnErrores.class
+midik/tablaSimbolos/Roles.class
+midik/frontend/VtnErrores$1.class

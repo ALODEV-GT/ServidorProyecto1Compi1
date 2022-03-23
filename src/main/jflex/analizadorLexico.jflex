@@ -1,6 +1,9 @@
 package midik.jflex;
 import java_cup.runtime.Symbol;
 import midik.cup.sym;
+import midik.tablaSimbolos.TablaSimbolos;
+import midik.tablaSimbolos.Termino;
+import midik.tablaSimbolos.Roles;
 
 %%
 %class AnalizadorLexico
@@ -13,6 +16,15 @@ import midik.cup.sym;
 %state COMENTARIO_BLOQUE
 
 %{
+    private TablaSimbolos tablaSimbolos;
+    private String comentarioBloque="";
+    private javax.swing.JTextArea taErrores;
+
+    public AnalizadorLexico(java.io.Reader in, TablaSimbolos tablaSimbolos, javax.swing.JTextArea taErrores){
+        this(in);
+        this.taErrores = taErrores;
+        this.tablaSimbolos = tablaSimbolos;
+    }
 
     private Symbol symbol(int type) {
         return new Symbol(type, yycolumn+1, yyline+1);
@@ -20,6 +32,14 @@ import midik.cup.sym;
 
     private Symbol symbol(int type, Object value) {
         return new Symbol(type, yycolumn+1, yyline+1, value);
+    }
+
+    private void agregarComentarioLinea(String comentario){
+        tablaSimbolos.agregarTermino(new Termino(comentario, null, null, null, Roles.COMENTARIO_LINEA));
+    }
+
+    private void agregarComentarioBloque(String comentario){
+        tablaSimbolos.agregarTermino(new Termino(comentario, null, null, null, Roles.COMENTARIO_BLOQUE));
     }
 
 %}
@@ -151,7 +171,7 @@ NULL = "null"
 <YYINITIAL> {MENOS}                             {return symbol(sym.MENOS, yytext());}
 <YYINITIAL> {POR}                               {return symbol(sym.POR, yytext());}
 <YYINITIAL> {INICIO_COMENTARIO_BLOQUE}          {yybegin(COMENTARIO_BLOQUE);}
-<YYINITIAL> {COMENTARIO_LINEA}                  {}
+<YYINITIAL> {COMENTARIO_LINEA}                  {agregarComentarioLinea(yytext());}
 <YYINITIAL> {DIVISION}                          {return symbol(sym.DIVISION, yytext());}
 <YYINITIAL> {IGUAL}                             {return symbol(sym.IGUAL, yytext());}
 <YYINITIAL> {MAYOR_IGUAL}                       {return symbol(sym.MAYOR_IGUAL, yytext());}
@@ -172,9 +192,9 @@ NULL = "null"
 <YYINITIAL> {ESPACIO}                           {}
 
 <COMENTARIO_BLOQUE> {
-    {FIN_COMENTARIO_BLOQUE}                     {yybegin(YYINITIAL);}
-    [^]                                         {}
+    {FIN_COMENTARIO_BLOQUE}                     {yybegin(YYINITIAL); agregarComentarioBloque(comentarioBloque); comentarioBloque="";}
+    [^]                                         {comentarioBloque+=yytext();}
 }
 
 <<EOF>>                                         { return symbol(sym.EOF,"FIN"); }
-<YYINITIAL> .                                   {System.out.println("El simbolo " + yytext() + " no existe en el lenguaje." + " Linea:" + (yyline+1) + " Columna:" + yycolumn);}
+<YYINITIAL> .                                   {taErrores.append("El simbolo " + yytext() + " no existe en el lenguaje." + " Linea:" + (yyline+1) + " Columna:" + yycolumn + "\n");}

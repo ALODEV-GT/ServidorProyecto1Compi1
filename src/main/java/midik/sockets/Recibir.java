@@ -14,6 +14,7 @@ public class Recibir {
     }
 
     public void recibir() throws IOException {
+        limpiarDirectorios();
         crearDirectorios();
         int cantidadArchivosP1 = this.in.readInt();
         int cantidadArchivosP2 = this.in.readInt();
@@ -48,6 +49,22 @@ public class Recibir {
         }
         if (!directorioP2.exists()) {
             directorioP2.mkdir();
+        }
+    }
+
+    private void limpiarDirectorios() {
+        File directorioP1 = new File("Proyecto1");
+        File directorioP2 = new File("Proyecto2");
+
+        File[] archivosP1 = directorioP1.listFiles();
+        File[] archivosP2 = directorioP2.listFiles();
+
+        for (int i = 0; i < archivosP1.length; i++) {
+            archivosP1[i].delete();
+        }
+
+        for (int i = 0; i < archivosP2.length; i++) {
+            archivosP2[i].delete();
         }
     }
 }
