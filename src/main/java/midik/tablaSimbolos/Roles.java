@@ -2,7 +2,7 @@ package midik.tablaSimbolos;
 
 public enum Roles {
     CLASE("CLASE"),
-    METODO_FUNCION("METODO_FUNCION"),
+    METODO("METODO"),
     VARIABLE("VARIABLE"),
     PARAMETRO("PARAMETRO"),
     COMENTARIO_LINEA("COMENTARIO_LINEA"),

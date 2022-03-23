@@ -19,11 +19,16 @@ import midik.tablaSimbolos.Roles;
     private TablaSimbolos tablaSimbolos;
     private String comentarioBloque="";
     private javax.swing.JTextArea taErrores;
+    private boolean errores = false;
 
     public AnalizadorLexico(java.io.Reader in, TablaSimbolos tablaSimbolos, javax.swing.JTextArea taErrores){
         this(in);
         this.taErrores = taErrores;
         this.tablaSimbolos = tablaSimbolos;
+    }
+
+    public boolean isErrores(){
+        return errores;
     }
 
     private Symbol symbol(int type) {
@@ -197,4 +202,4 @@ NULL = "null"
 }
 
 <<EOF>>                                         { return symbol(sym.EOF,"FIN"); }
-<YYINITIAL> .                                   {taErrores.append("El simbolo " + yytext() + " no existe en el lenguaje." + " Linea:" + (yyline+1) + " Columna:" + yycolumn + "\n");}
+<YYINITIAL> .                                   {taErrores.append("El simbolo " + yytext() + " no existe en el lenguaje." + " Linea:" + (yyline+1) + " Columna:" + yycolumn + "\n"); errores = true;}

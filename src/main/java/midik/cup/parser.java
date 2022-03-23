@@ -1162,7 +1162,8 @@ public class parser extends java_cup.runtime.lr_parser {
     private String ambitoActual="";
     private String temp="";
     private TablaSimbolos tablaSimbolos;
-    private javax.swing.JTextArea taErrores; 
+    private javax.swing.JTextArea taErrores;
+    private boolean errores = false; 
 
     public parser(java_cup.runtime.Scanner s, TablaSimbolos tablaSimbolos, javax.swing.JTextArea taErrores){
         this(s);
@@ -1170,11 +1171,17 @@ public class parser extends java_cup.runtime.lr_parser {
         this.taErrores = taErrores;
     }
 
+    public boolean isErrores(){
+        return errores;
+    }
+
     public void syntax_error(Symbol s){
+        errores = true;
         taErrores.append("Error sintactico: " + s.value.toString() + " Linea:" + s.right + " Columna:" + s.left + ". ");
     }
 
     public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception {
+        errores = true;
         taErrores.append("No se pudo recuperar el analizador. Linea:" + s.right + " Columna:" + s.left + "\n");
     }
 
@@ -1693,7 +1700,7 @@ ambitoActual="Constructor "+v1;
 		int v2left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int v2right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		String v2 = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-temp="Metodo/Funcion "+v2;
+temp="Metodo "+v2;
               CUP$parser$result = parser.getSymbolFactory().newSymbol("NT$1",115, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -1725,7 +1732,7 @@ temp="Metodo/Funcion "+v2;
 		int v1left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int v1right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		String v1 = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-temp="Metodo/Funcion "+v1;
+temp="Metodo "+v1;
               CUP$parser$result = parser.getSymbolFactory().newSymbol("NT$2",116, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -2068,7 +2075,7 @@ ambitoActual=temp;
               Termino RESULT =null;
               // propagate RESULT from NT$3
                 RESULT = (Termino) ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
-		Termino term = new Termino(); term.setRol(Roles.METODO_FUNCION); RESULT=term;
+		Termino term = new Termino(); term.setRol(Roles.METODO); RESULT=term;
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s81",94, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -2176,7 +2183,7 @@ ambitoActual=temp;
 		int v2left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int v2right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Termino v2 = (Termino)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		v2.setTipo(v1); v2.setAmbito(ambitoActual); v2.setRol(Roles.PARAMETRO); tablaSimbolos.agregarTermino(v2);
+		v2.setTipo(v1); v2.setAmbito(ambitoActual); v2.setRol(Roles.VARIABLE); v2.setParametro(true); tablaSimbolos.agregarTermino(v2);
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s14",16, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -2191,7 +2198,7 @@ ambitoActual=temp;
 		int v2left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int v2right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Termino v2 = (Termino)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		v2.setTipo(v1); v2.setAmbito(ambitoActual); v2.setRol(Roles.PARAMETRO); tablaSimbolos.agregarTermino(v2);
+		v2.setTipo(v1); v2.setAmbito(ambitoActual); v2.setRol(Roles.VARIABLE); v2.setParametro(true); tablaSimbolos.agregarTermino(v2);
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s14",16, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -2206,7 +2213,7 @@ ambitoActual=temp;
 		int v2left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int v2right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Termino v2 = (Termino)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		v2.setTipo(v1); v2.setAmbito(ambitoActual); v2.setRol(Roles.PARAMETRO); tablaSimbolos.agregarTermino(v2);
+		v2.setTipo(v1); v2.setAmbito(ambitoActual); v2.setRol(Roles.VARIABLE); v2.setParametro(true); tablaSimbolos.agregarTermino(v2);
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s14",16, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -2221,7 +2228,7 @@ ambitoActual=temp;
 		int v2left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int v2right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Termino v2 = (Termino)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		v2.setTipo(v1); v2.setAmbito(ambitoActual); v2.setRol(Roles.PARAMETRO); tablaSimbolos.agregarTermino(v2);
+		v2.setTipo(v1); v2.setAmbito(ambitoActual); v2.setRol(Roles.VARIABLE); v2.setParametro(true); tablaSimbolos.agregarTermino(v2);
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s14",16, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -2236,7 +2243,7 @@ ambitoActual=temp;
 		int v2left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int v2right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Termino v2 = (Termino)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		v2.setTipo(v1); v2.setAmbito(ambitoActual); v2.setRol(Roles.PARAMETRO); tablaSimbolos.agregarTermino(v2);
+		v2.setTipo(v1); v2.setAmbito(ambitoActual); v2.setRol(Roles.VARIABLE); v2.setParametro(true); tablaSimbolos.agregarTermino(v2);
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s14",16, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -2251,7 +2258,7 @@ ambitoActual=temp;
 		int v2left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int v2right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Termino v2 = (Termino)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		v2.setTipo(v1); v2.setAmbito(ambitoActual); v2.setRol(Roles.PARAMETRO); tablaSimbolos.agregarTermino(v2);
+		v2.setTipo(v1); v2.setAmbito(ambitoActual); v2.setRol(Roles.VARIABLE); v2.setParametro(true); tablaSimbolos.agregarTermino(v2);
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s14",16, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;

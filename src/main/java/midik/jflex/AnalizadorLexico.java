@@ -402,11 +402,16 @@ public class AnalizadorLexico implements java_cup.runtime.Scanner {
     private TablaSimbolos tablaSimbolos;
     private String comentarioBloque="";
     private javax.swing.JTextArea taErrores;
+    private boolean errores = false;
 
     public AnalizadorLexico(java.io.Reader in, TablaSimbolos tablaSimbolos, javax.swing.JTextArea taErrores){
         this(in);
         this.taErrores = taErrores;
         this.tablaSimbolos = tablaSimbolos;
+    }
+
+    public boolean isErrores(){
+        return errores;
     }
 
     private Symbol symbol(int type) {
@@ -835,7 +840,7 @@ public class AnalizadorLexico implements java_cup.runtime.Scanner {
       else {
         switch (zzAction < 0 ? zzAction : ZZ_ACTION[zzAction]) {
           case 1:
-            { taErrores.append("El simbolo " + yytext() + " no existe en el lenguaje." + " Linea:" + (yyline+1) + " Columna:" + yycolumn + "\n");
+            { taErrores.append("El simbolo " + yytext() + " no existe en el lenguaje." + " Linea:" + (yyline+1) + " Columna:" + yycolumn + "\n"); errores = true;
             }
             // fall through
           case 63: break;

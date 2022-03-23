@@ -4,6 +4,7 @@ midik/jflex/AnalizadorLexico.class
 midik/sockets/Recibir.class
 midik/comparacion/Comparar.class
 midik/tablaSimbolos/TablaSimbolos.class
+midik/comparacion/Comparar$1.class
 midik/tablaSimbolos/Termino.class
 midik/cup/parser.class
 midik/sockets/Servidor.class
@@ -12,3 +13,4 @@ midik/tablaSimbolos/Visibilidad.class
 midik/frontend/VtnErrores.class
 midik/tablaSimbolos/Roles.class
 midik/frontend/VtnErrores$1.class
+midik/comparacion/Repetido.class

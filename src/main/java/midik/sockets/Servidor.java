@@ -2,7 +2,6 @@ package midik.sockets;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -34,8 +33,9 @@ public class Servidor {
                 Recibir recibir = new Recibir(in);
                 recibir.recibir();
 
-                Comparar comparar = new Comparar(vtnErrores.getTaErrores());
+                Comparar comparar = new Comparar(vtnErrores.getTaErrores(), out);
                 comparar.comparar();
+                
 
                 sc.close();
                 System.out.println("Cliente desconectado");

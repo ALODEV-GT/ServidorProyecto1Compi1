@@ -11,7 +11,8 @@ parser code
     private String ambitoActual="";
     private String temp="";
     private TablaSimbolos tablaSimbolos;
-    private javax.swing.JTextArea taErrores; 
+    private javax.swing.JTextArea taErrores;
+    private boolean errores = false; 
 
     public parser(java_cup.runtime.Scanner s, TablaSimbolos tablaSimbolos, javax.swing.JTextArea taErrores){
         this(s);
@@ -19,11 +20,17 @@ parser code
         this.taErrores = taErrores;
     }
 
+    public boolean isErrores(){
+        return errores;
+    }
+
     public void syntax_error(Symbol s){
+        errores = true;
         taErrores.append("Error sintactico: " + s.value.toString() + " Linea:" + s.right + " Columna:" + s.left + ". ");
     }
 
     public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception {
+        errores = true;
         taErrores.append("No se pudo recuperar el analizador. Linea:" + s.right + " Columna:" + s.left + "\n");
     }
 :};
@@ -127,9 +134,9 @@ s9::= INT:v1 s10:v2                 {:v2.setTipo(v1); RESULT=v2;:}
 |CHAR:v1 s10:v2                     {:v2.setTipo(v1); RESULT=v2;:}
 |DOUBLE:v1 s10:v2                   {:v2.setTipo(v1); RESULT=v2;:}
 |ID:v1 s10:v2                       {:v2.setTipo(v1); RESULT=v2;:}
-|VOID:v1 ID:v2 {:temp="Metodo/Funcion "+v2;:} s81:v3               {:v3.setNombre(v2); v3.setTipo(v1); RESULT=v3;:}
+|VOID:v1 ID:v2 {:temp="Metodo "+v2;:} s81:v3               {:v3.setNombre(v2); v3.setTipo(v1); RESULT=v3;:}
 ;
-s10::= ID:v1 {:temp="Metodo/Funcion "+v1;:} s104:v2   {:  
+s10::= ID:v1 {:temp="Metodo "+v1;:} s104:v2   {:  
                                                 if(v2==null){
                                                     Termino term = new Termino(); term.setNombre(v1); RESULT=term;
                                                 }else{
@@ -168,7 +175,7 @@ valor::= CADENA:v1
 //GRAMATICA: DECLARACION DE ATRIBUTOS -->FIN
 
 //GRAMATICA: METODOS Y FUNCIONES -->INICIO
-s81::= PARENTESIS_A {:ambitoActual=temp;:} s82   {:Termino term = new Termino(); term.setRol(Roles.METODO_FUNCION); RESULT=term;:}
+s81::= PARENTESIS_A {:ambitoActual=temp;:} s82   {:Termino term = new Termino(); term.setRol(Roles.METODO); RESULT=term;:}
 ;
 s82::= parametro s83
 |error                                           {:taErrores.append("Se esperaban los parametros o )  \n");:}
@@ -189,12 +196,12 @@ s86::= LLAVE_C
 parametro::= s14:v1                               {::}
 |
 ;
-s14::= INT:v1 s15:v2                              {:v2.setTipo(v1); v2.setAmbito(ambitoActual); v2.setRol(Roles.PARAMETRO); tablaSimbolos.agregarTermino(v2);:}
-|BOOLEAN:v1 s15:v2                                {:v2.setTipo(v1); v2.setAmbito(ambitoActual); v2.setRol(Roles.PARAMETRO); tablaSimbolos.agregarTermino(v2);:}
-|STRING:v1 s15:v2                                 {:v2.setTipo(v1); v2.setAmbito(ambitoActual); v2.setRol(Roles.PARAMETRO); tablaSimbolos.agregarTermino(v2);:}
-|CHAR:v1 s15:v2                                   {:v2.setTipo(v1); v2.setAmbito(ambitoActual); v2.setRol(Roles.PARAMETRO); tablaSimbolos.agregarTermino(v2);:}
-|DOUBLE:v1 s15:v2                                 {:v2.setTipo(v1); v2.setAmbito(ambitoActual); v2.setRol(Roles.PARAMETRO); tablaSimbolos.agregarTermino(v2);:}
-|ID:v1 s15:v2                                     {:v2.setTipo(v1); v2.setAmbito(ambitoActual); v2.setRol(Roles.PARAMETRO); tablaSimbolos.agregarTermino(v2);:}
+s14::= INT:v1 s15:v2                              {:v2.setTipo(v1); v2.setAmbito(ambitoActual); v2.setRol(Roles.VARIABLE); v2.setParametro(true); tablaSimbolos.agregarTermino(v2);:}
+|BOOLEAN:v1 s15:v2                                {:v2.setTipo(v1); v2.setAmbito(ambitoActual); v2.setRol(Roles.VARIABLE); v2.setParametro(true); tablaSimbolos.agregarTermino(v2);:}
+|STRING:v1 s15:v2                                 {:v2.setTipo(v1); v2.setAmbito(ambitoActual); v2.setRol(Roles.VARIABLE); v2.setParametro(true); tablaSimbolos.agregarTermino(v2);:}
+|CHAR:v1 s15:v2                                   {:v2.setTipo(v1); v2.setAmbito(ambitoActual); v2.setRol(Roles.VARIABLE); v2.setParametro(true); tablaSimbolos.agregarTermino(v2);:}
+|DOUBLE:v1 s15:v2                                 {:v2.setTipo(v1); v2.setAmbito(ambitoActual); v2.setRol(Roles.VARIABLE); v2.setParametro(true); tablaSimbolos.agregarTermino(v2);:}
+|ID:v1 s15:v2                                     {:v2.setTipo(v1); v2.setAmbito(ambitoActual); v2.setRol(Roles.VARIABLE); v2.setParametro(true); tablaSimbolos.agregarTermino(v2);:}
 ;
 s15::= ID:v1 s16                                  {:Termino term = new Termino(); term.setNombre(v1); RESULT=term;:}
 |error                                            {:taErrores.append("Se esperaba un id \n");:}

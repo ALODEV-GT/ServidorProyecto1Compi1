@@ -3,10 +3,11 @@ package midik.tablaSimbolos;
 public class Termino {
 
     private String nombre;
-    private String tipo;
-    private String ambito;
+    private String tipo="";
+    private String ambito="";
     private Visibilidad visibilidad;
     private Roles rol;
+    private boolean parametro = false;
 
     public Termino() {
     }
@@ -57,6 +58,14 @@ public class Termino {
 
     public void setRol(Roles rol) {
         this.rol = rol;
+    }
+
+    public boolean isParametro() {
+        return parametro;
+    }
+
+    public void setParametro(boolean parametro) {
+        this.parametro = parametro;
     }
 
     @Override
