@@ -22,6 +22,8 @@ public class Comparar {
     private final ArrayList<Repetido> repetidos = new ArrayList<>();
     private final DataOutputStream out;
     private boolean errores = false;
+    private Score score = new Score();
+    private boolean contadoP2 = false;
 
     public Comparar(javax.swing.JTextArea taErrores, DataOutputStream out) {
         this.taErrores = taErrores;
@@ -42,11 +44,13 @@ public class Comparar {
             ArrayList<Termino> tsArchivo = tablasSimbolosP1.get(i).getTablaSimbolos(); //Archivo
             for (int j = 0; j < tsArchivo.size(); j++) {
                 Termino termino = tsArchivo.get(j); //Termino
+                score.contar(termino.getRol());
                 compararTerminoConTablas(termino, tsArchivo);
             }
         }
         if (this.repetidos.size() > 0) {
-            out.writeUTF("Comparacion finalizada, se genero el json: \n" + crearRespuesta());
+            this.score.setRepetidos(repetidos);
+            out.writeUTF("Comparacion finalizada, se genero el json: \n" + "Score: " + this.score.calcularScore() + "\n" + crearRespuesta());
         } else {
             out.writeUTF("Comparacion finalizada, NO SE ENCONTRARON REPETIDOS");
         }
@@ -69,7 +73,7 @@ public class Comparar {
         }
         return parametros;
     }
-    
+
     private ArrayList<Termino> obtenerMetodosClase(ArrayList<Termino> terminos) {
         ArrayList<Termino> metodos = new ArrayList<>();
         for (int i = 0; i < terminos.size(); i++) {
@@ -91,7 +95,9 @@ public class Comparar {
             ArrayList<Termino> tsArchivo = tablasSimbolosP2.get(i).getTablaSimbolos(); //Archivo
             for (int j = 0; j < tsArchivo.size(); j++) {
                 Termino termino = tsArchivo.get(j); //termino
-
+                if (contadoP2 == false) {
+                    score.contar(termino.getRol());
+                }
                 if (termino.getRol().equals(rol)) {
                     switch (rol) {
                         case CLASE:
@@ -127,6 +133,7 @@ public class Comparar {
             }
         }
 
+        contadoP2 = true;
         if (repetido) {
             this.repetidos.add(new Repetido(terminoP1.getNombre(), rol, terminoP1.getAmbito() + "," + lugarRepitencia, terminoP1.getTipo(), numParametros));
         }
@@ -151,7 +158,7 @@ public class Comparar {
 
         return iguales;
     }
-    
+
     private boolean compararClases(ArrayList<Termino> tsArchivoP1, ArrayList<Termino> tsArchivoP2) {
         boolean iguales = false;
         ArrayList<Termino> metodosArchivoP1 = obtenerMetodosClase(tsArchivoP1);
@@ -160,7 +167,7 @@ public class Comparar {
         if (metodosArchivoP1.size() == metodosArchivoP2.size()) {
             for (int i = 0; i < metodosArchivoP1.size(); i++) {
                 for (int j = 0; j < metodosArchivoP2.size(); j++) {
-                    if (metodosArchivoP1.get(i).getNombre().equals(metodosArchivoP2.get(j).getNombre()) ) {
+                    if (metodosArchivoP1.get(i).getNombre().equals(metodosArchivoP2.get(j).getNombre())) {
                         contador++;
                         break;
                     }
@@ -215,5 +222,4 @@ public class Comparar {
             taErrores.append("Algo grave ocurrio con el analizador sintactico");
         }
     }
-
 }
