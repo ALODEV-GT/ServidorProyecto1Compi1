@@ -403,11 +403,13 @@ public class AnalizadorLexico implements java_cup.runtime.Scanner {
     private String comentarioBloque="";
     private javax.swing.JTextArea taErrores;
     private boolean errores = false;
+    private String nombreArchivo;
 
-    public AnalizadorLexico(java.io.Reader in, TablaSimbolos tablaSimbolos, javax.swing.JTextArea taErrores){
+    public AnalizadorLexico(java.io.Reader in, TablaSimbolos tablaSimbolos, javax.swing.JTextArea taErrores, String nombreArchivo){
         this(in);
         this.taErrores = taErrores;
         this.tablaSimbolos = tablaSimbolos;
+        this.nombreArchivo = nombreArchivo;
     }
 
     public boolean isErrores(){
@@ -423,11 +425,11 @@ public class AnalizadorLexico implements java_cup.runtime.Scanner {
     }
 
     private void agregarComentarioLinea(String comentario){
-        tablaSimbolos.agregarTermino(new Termino(comentario, null, null, null, Roles.COMENTARIO_LINEA));
+        tablaSimbolos.agregarTermino(new Termino(comentario.replace("\n",""), null, "Archivo " + nombreArchivo, null, Roles.COMENTARIO_LINEA));
     }
 
     private void agregarComentarioBloque(String comentario){
-        tablaSimbolos.agregarTermino(new Termino(comentario, null, null, null, Roles.COMENTARIO_BLOQUE));
+        tablaSimbolos.agregarTermino(new Termino(comentario.replace("//","").replace("\n",""), null, "Archivo " + nombreArchivo, null, Roles.COMENTARIO_BLOQUE));
     }
 
 

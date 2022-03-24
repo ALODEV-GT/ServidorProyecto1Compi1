@@ -36,9 +36,9 @@ public class Score {
 
         double score = 0;
 
-//        if (contadorComentarios > 0) {
-//            score += (double) contadorComentariosRep / (double) contadorComentarios * 0.25;
-//        }
+        if (contadorComentarios > 0) {
+            score += (double) contadorComentariosRep / (double) contadorComentarios * 0.25;
+        }
         if (contadorVariables > 0) {
             score += (double) contadorVariablesRep / (double) contadorVariables * 0.25;
         }
@@ -57,6 +57,7 @@ public class Score {
 
     private void contarRepitencia() {
         this.contarRepitenciaVariables();
+        this.contarRepitenciaComentarios();
     }
 
     private void contarRepitenciaVariables() {
@@ -71,14 +72,32 @@ public class Score {
                     Repetido r2 = this.variables.get(j);
                     if (r1.getNombre().equals(r2.getNombre())) {
                         revisados.add(j);
-                        String[] lugaresR2 = r2.getLugarRepitencia().split(",");
-                        compararLugares(lugares, lugaresR2);
+                        this.contadorVariablesRep++;
                     }
                 }
                 this.contadorVariablesRep+=lugares.size();
-                System.out.println("Sin limpiar: " + lugares.size());
                 lugares.clear(); //limpiar
-                System.out.println("Limpiado: " + lugares.size());
+            }
+        }
+    }
+
+    private void contarRepitenciaComentarios() {
+        ArrayList<Integer> revisados = new ArrayList<>();
+        ArrayList<String> lugares;
+
+        for (int i = 0; i < this.comentarios.size(); i++) {
+            if (!esRevisado(revisados, i)) {
+                Repetido r1 = this.comentarios.get(i);
+                lugares = new ArrayList<>(Arrays.asList(r1.getLugarRepitencia().split(",")));
+                for (int j = i + 1; j < this.comentarios.size(); j++) {
+                    Repetido r2 = this.comentarios.get(j);
+                    if (r1.getNombre().equals(r2.getNombre())) {
+                        revisados.add(j);
+                        this.contadorComentariosRep++;
+                    }
+                }
+                this.contadorComentariosRep += lugares.size();
+                lugares.clear(); //limpiar
             }
         }
     }

@@ -103,8 +103,8 @@ public class Comparar {
                         case COMENTARIO_BLOQUE:
                         case COMENTARIO_LINEA:
                             if (terminoP1.getNombre().equals(termino.getNombre())) {
+                                lugarRepitencia += termino.getAmbito() + ",";
                                 repetido = true;
-                                break;
                             }
                             break;
                         case METODO:
@@ -198,7 +198,7 @@ public class Comparar {
 
         StringReader sr = new StringReader(entrada);
         TablaSimbolos ts = new TablaSimbolos();
-        AnalizadorLexico lexer = new AnalizadorLexico(sr, ts, taErrores);
+        AnalizadorLexico lexer = new AnalizadorLexico(sr, ts, taErrores, file.getName());
         parser par = new parser(lexer, ts, taErrores);
         contenedor.add(ts);
 

@@ -1,5 +1,6 @@
 midik/cup/parser$CUP$parser$actions.class
 midik/cup/sym.class
+midik/comparacion/Score$1.class
 midik/jflex/AnalizadorLexico.class
 midik/sockets/Recibir.class
 midik/comparacion/Comparar.class
@@ -8,7 +9,10 @@ midik/comparacion/Comparar$1.class
 midik/tablaSimbolos/Termino.class
 midik/cup/parser.class
 midik/sockets/Servidor.class
+midik/comparacion/GenerarJson.class
+midik/comparacion/GenerarJson$1.class
 midik/test/Main.class
+midik/comparacion/Score.class
 midik/tablaSimbolos/Visibilidad.class
 midik/frontend/VtnErrores.class
 midik/tablaSimbolos/Roles.class
