@@ -33,7 +33,8 @@ public class Comparar {
     public void comparar() throws IOException {
         this.analizarArchivos();
         if (errores) {
-            out.writeUTF("No se pudo generar el json, hay errores");
+            out.writeBoolean(false);
+            out.writeUTF("Hay errores lexicos o sintacticos");
         } else {
             this.iniciarComparacion();
         }
@@ -52,9 +53,11 @@ public class Comparar {
             this.score.setRepetidos(repetidos);
             double score = this.score.calcularScore();
             GenerarJson json = new GenerarJson(repetidos, score);
+            out.writeBoolean(true);
             out.writeUTF(json.generar());
         } else {
-            out.writeUTF("Comparacion finalizada, NO SE ENCONTRARON REPETIDOS");
+            out.writeBoolean(false);
+            out.writeUTF("No se encontraron repetidos");
         }
     }
 
