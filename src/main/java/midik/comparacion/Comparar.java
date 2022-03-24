@@ -97,6 +97,9 @@ public class Comparar {
                         case CLASE:
                             if (terminoP1.getNombre().equals(termino.getNombre())) {
                                 boolean iguales = compararClases(tsArchivo, tsArchivoP1);
+                                if (iguales) {
+                                    lugarRepitencia += termino.getAmbito() + ",";
+                                }
                                 repetido = iguales;
                             }
                             break;
@@ -112,6 +115,9 @@ public class Comparar {
                                 ArrayList<Termino> parametrosFuncion = obtenerParametrosFuncion(tsArchivoP1, terminoP1.getNombre());
                                 boolean iguales = compararParametros(tsArchivo, parametrosFuncion, terminoP1.getNombre());
                                 numParametros = parametrosFuncion.size();
+                                if (iguales) {
+                                    lugarRepitencia += termino.getAmbito() + ",";
+                                }
                                 repetido = iguales;
                             }
                             break;
@@ -199,7 +205,7 @@ public class Comparar {
         StringReader sr = new StringReader(entrada);
         TablaSimbolos ts = new TablaSimbolos();
         AnalizadorLexico lexer = new AnalizadorLexico(sr, ts, taErrores, file.getName());
-        parser par = new parser(lexer, ts, taErrores);
+        parser par = new parser(lexer, ts, taErrores, file.getName());
         contenedor.add(ts);
 
         try {

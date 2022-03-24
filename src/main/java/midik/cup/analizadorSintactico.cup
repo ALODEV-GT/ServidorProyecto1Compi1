@@ -13,11 +13,13 @@ parser code
     private TablaSimbolos tablaSimbolos;
     private javax.swing.JTextArea taErrores;
     private boolean errores = false; 
+    private String nombreArchivo;
 
-    public parser(java_cup.runtime.Scanner s, TablaSimbolos tablaSimbolos, javax.swing.JTextArea taErrores){
+    public parser(java_cup.runtime.Scanner s, TablaSimbolos tablaSimbolos, javax.swing.JTextArea taErrores, String nombreArchivo){
         this(s);
         this.tablaSimbolos = tablaSimbolos;
         this.taErrores = taErrores;
+        this.nombreArchivo = nombreArchivo;
     }
 
     public boolean isErrores(){
@@ -486,7 +488,7 @@ s95::= PUBLIC:v1 s96:v2                                 {:v2.setVisibilidad(Visi
 ;
 s96::= CLASS:v1 s97:v2                                 {:v2.setRol(Roles.CLASE); RESULT=v2;:}
 ;
-s97::= ID:v1 {:nombreClase="Clase "+v1;:} s98          {:Termino term = new Termino(); term.setNombre(v1); ambitoActual="Clase "+v1; RESULT=term;:} 
+s97::= ID:v1 {:nombreClase="Clase "+v1;:} s98          {:Termino term = new Termino(); term.setAmbito("Archivo "+nombreArchivo); term.setNombre(v1); ambitoActual="Clase "+v1; RESULT=term;:} 
 |error                                           {:taErrores.append("Se esperaba el nombre de la clase \n");:}
 ;
 s98::= LLAVE_A s99

@@ -1164,11 +1164,13 @@ public class parser extends java_cup.runtime.lr_parser {
     private TablaSimbolos tablaSimbolos;
     private javax.swing.JTextArea taErrores;
     private boolean errores = false; 
+    private String nombreArchivo;
 
-    public parser(java_cup.runtime.Scanner s, TablaSimbolos tablaSimbolos, javax.swing.JTextArea taErrores){
+    public parser(java_cup.runtime.Scanner s, TablaSimbolos tablaSimbolos, javax.swing.JTextArea taErrores, String nombreArchivo){
         this(s);
         this.tablaSimbolos = tablaSimbolos;
         this.taErrores = taErrores;
+        this.nombreArchivo = nombreArchivo;
     }
 
     public boolean isErrores(){
@@ -4054,7 +4056,7 @@ nombreClase="Clase "+v1;
 		int v1left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
 		int v1right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
 		String v1 = (String)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
-		Termino term = new Termino(); term.setNombre(v1); ambitoActual="Clase "+v1; RESULT=term;
+		Termino term = new Termino(); term.setAmbito("Archivo "+nombreArchivo); term.setNombre(v1); ambitoActual="Clase "+v1; RESULT=term;
               CUP$parser$result = parser.getSymbolFactory().newSymbol("s97",108, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;

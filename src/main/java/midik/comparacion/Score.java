@@ -42,12 +42,12 @@ public class Score {
         if (contadorVariables > 0) {
             score += (double) contadorVariablesRep / (double) contadorVariables * 0.25;
         }
-//        if (contadorMetodos > 0) {
-//            score += (double) contadorMetodosRep / (double) contadorMetodos * 0.25;
-//        }
-//        if (contadorClases > 0) {
-//            score += (double) contadorClasesRep / (double) contadorClases * 0.25;
-//        }
+        if (contadorMetodos > 0) {
+            score += (double) contadorMetodosRep / (double) contadorMetodos * 0.25;
+        }
+        if (contadorClases > 0) {
+            score += (double) contadorClasesRep / (double) contadorClases * 0.25;
+        }
 
         this.imprimirContadores();
         this.imprimirContadoresRep();
@@ -58,6 +58,8 @@ public class Score {
     private void contarRepitencia() {
         this.contarRepitenciaVariables();
         this.contarRepitenciaComentarios();
+        this.contarRepitenciaClases();
+        this.contarRepitenciaMetodos();
     }
 
     private void contarRepitenciaVariables() {
@@ -75,7 +77,7 @@ public class Score {
                         this.contadorVariablesRep++;
                     }
                 }
-                this.contadorVariablesRep+=lugares.size();
+                this.contadorVariablesRep += lugares.size();
                 lugares.clear(); //limpiar
             }
         }
@@ -102,6 +104,49 @@ public class Score {
         }
     }
 
+    private void contarRepitenciaClases() {
+        ArrayList<Integer> revisados = new ArrayList<>();
+        ArrayList<String> lugares;
+
+        for (int i = 0; i < this.clases.size(); i++) {
+            if (!esRevisado(revisados, i)) {
+                Repetido r1 = this.clases.get(i);
+                lugares = new ArrayList<>(Arrays.asList(r1.getLugarRepitencia().split(",")));
+                for (int j = i + 1; j < this.clases.size(); j++) {
+                    Repetido r2 = this.clases.get(j);
+                    if (r1.getNombre().equals(r2.getNombre())) {
+                        revisados.add(j);
+                        this.contadorClasesRep++;
+                    }
+                }
+                this.contadorClasesRep += lugares.size();
+                lugares.clear(); //limpiar
+            }
+        }
+    }
+
+    private void contarRepitenciaMetodos() {
+        System.out.println("Metodos repetidos: " + this.metodos.size());
+        ArrayList<Integer> revisados = new ArrayList<>();
+        ArrayList<String> lugares;
+
+        for (int i = 0; i < this.metodos.size(); i++) {
+            if (!esRevisado(revisados, i)) {
+                Repetido r1 = this.metodos.get(i);
+                lugares = new ArrayList<>(Arrays.asList(r1.getLugarRepitencia().split(",")));
+                for (int j = i + 1; j < this.metodos.size(); j++) {
+                    Repetido r2 = this.metodos.get(j);
+                    if (r1.getNombre().equals(r2.getNombre())) {
+                        revisados.add(j);
+                        this.contadorMetodosRep++;
+                    }
+                }
+                this.contadorMetodosRep += lugares.size();
+                lugares.clear(); //limpiar
+            }
+        }
+    }
+
     private boolean esRevisado(ArrayList<Integer> revisados, int indice) {
         boolean revisado = false;
         for (int i = 0; i < revisados.size(); i++) {
@@ -111,22 +156,6 @@ public class Score {
             }
         }
         return revisado;
-    }
-
-    private void compararLugares(ArrayList<String> lugares, String[] lugaresR2) {
-        boolean existe = false;
-        for (int i = 0; i < lugaresR2.length; i++) {
-            existe = false;
-            for (int j = 0; j < lugares.size(); j++) {
-                if (lugaresR2[i].equals(lugares.get(j))) {
-                    existe = true;
-                    break;
-                }
-            }
-            if (!existe) {
-                lugares.add(lugaresR2[i]);
-            }
-        }
     }
 
     private void imprimirContadores() {
