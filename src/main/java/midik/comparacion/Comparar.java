@@ -50,18 +50,12 @@ public class Comparar {
         }
         if (this.repetidos.size() > 0) {
             this.score.setRepetidos(repetidos);
-            out.writeUTF("Comparacion finalizada, se genero el json: \n" + "Score: " + this.score.calcularScore() + "\n" + crearRespuesta());
+            double score = this.score.calcularScore();
+            GenerarJson json = new GenerarJson(repetidos, score);
+            out.writeUTF(json.generar());
         } else {
             out.writeUTF("Comparacion finalizada, NO SE ENCONTRARON REPETIDOS");
         }
-    }
-
-    private String crearRespuesta() {
-        String respuesta = "";
-        for (Repetido res : this.repetidos) {
-            respuesta += res.toString() + "\n";
-        }
-        return respuesta;
     }
 
     private ArrayList<Termino> obtenerParametrosFuncion(ArrayList<Termino> terminos, String nombreFuncion) {
