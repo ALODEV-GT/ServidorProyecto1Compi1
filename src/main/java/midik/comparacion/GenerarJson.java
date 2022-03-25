@@ -98,7 +98,7 @@ public class GenerarJson {
         for (int i = 0; i < this.metodos.size(); i++) {
             Repetido r = this.metodos.get(i);
             lista += "{Nombre:\"" + r.getNombre() + "\", Tipo:\"" + r.getTipo() + "\",Parametros:" + r.getNumParametros() + "}";
-            if (i != clases.size() - 1) {
+            if (i != metodos.size() - 1) {
                 lista += ",";
             }
         }
@@ -109,7 +109,7 @@ public class GenerarJson {
         String lista = "";
         for (int i = 0; i < this.comentarios.size(); i++) {
             lista += "{Texto:\"" + this.comentarios.get(i).getNombre() + "\"}";
-            if (i != clases.size() - 1) {
+            if (i != comentarios.size() - 1) {
                 lista += ",";
             }
         }
