@@ -10,9 +10,19 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
     </properties>
-    <build>
+    
+    <dependencies>
+        <!-- https://mvnrepository.com/artifact/com.github.vbmacher/java-cup -->
+        <dependency>
+            <groupId>com.github.vbmacher</groupId>
+            <artifactId>java-cup</artifactId>
+            <version>11b</version>
+        </dependency>
+    </dependencies>
+    
+    <!--    <build>
         <plugins>
-            <!--Complemento para usar jflex -->
+            Complemento para usar jflex 
             <plugin>
                 <groupId>de.jflex</groupId>
                 <artifactId>jflex-maven-plugin</artifactId>
@@ -23,9 +33,9 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <!--Direccion donde se generara el analizador lexico .java -->
+                            Direccion donde se generara el analizador lexico .java 
                             <outputDirectory>src/main/java/</outputDirectory>
-                            <!--Archivos .jflex parar generar el analizador lexico-->
+                            Archivos .jflex parar generar el analizador lexico
                             <lexDefinitions>
                                 <lexDefinition>src/main/jflex/analizadorLexico.jflex</lexDefinition>
                             </lexDefinitions>
@@ -34,14 +44,5 @@
                 </executions>
             </plugin>
         </plugins>
-    </build>
-    
-    <dependencies>
-        <!-- https://mvnrepository.com/artifact/com.github.vbmacher/java-cup -->
-        <dependency>
-            <groupId>com.github.vbmacher</groupId>
-            <artifactId>java-cup</artifactId>
-            <version>11b</version>
-        </dependency>
-    </dependencies>
+    </build>-->
 </project>
