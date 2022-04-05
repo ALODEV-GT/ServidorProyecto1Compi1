@@ -8,6 +8,9 @@ import java.io.IOException;
 public class Recibir {
 
     private final DataInputStream in;
+    private final String SEPARADOR = System.getProperty("file.separator");
+    private final String PATH_PROYECTO1 = "Proyecto1";
+    private final String PATH_PROYECTO2 = "Proyecto2";
 
     public Recibir(DataInputStream in) {
         this.in = in;
@@ -20,11 +23,11 @@ public class Recibir {
         int cantidadArchivosP2 = this.in.readInt();
 
         for (int i = 0; i < cantidadArchivosP1; i++) {
-            recibirArchivo("Proyecto1");
+            recibirArchivo(PATH_PROYECTO1);
         }
 
         for (int i = 0; i < cantidadArchivosP2; i++) {
-            recibirArchivo("Proyecto2");
+            recibirArchivo(PATH_PROYECTO2);
         }
     }
 
@@ -36,14 +39,14 @@ public class Recibir {
             contenidoArchivo[j] = in.readByte();
         }
         String contenido = new String(contenidoArchivo);
-        FileWriter fw = new FileWriter(nombreDirectorio + System.getProperty("file.separator") + nombreArchivo);
+        FileWriter fw = new FileWriter(nombreDirectorio + SEPARADOR + nombreArchivo);
         fw.write(contenido);
         fw.close();
     }
 
     private void crearDirectorios() {
-        File directorioP1 = new File("Proyecto1");
-        File directorioP2 = new File("Proyecto2");
+        File directorioP1 = new File(PATH_PROYECTO1);
+        File directorioP2 = new File(PATH_PROYECTO2);
         if (!directorioP1.exists()) {
             directorioP1.mkdir();
         }
@@ -53,9 +56,8 @@ public class Recibir {
     }
 
     private void limpiarDirectorios() {
-        File directorioP1 = new File("Proyecto1");
-        File directorioP2 = new File("Proyecto2");
-
+        File directorioP1 = new File(PATH_PROYECTO1);
+        File directorioP2 = new File(PATH_PROYECTO2);
         File[] archivosP1 = directorioP1.listFiles();
         File[] archivosP2 = directorioP2.listFiles();
 

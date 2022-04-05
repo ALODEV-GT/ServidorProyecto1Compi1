@@ -11,7 +11,6 @@ midik/cup/parser.class
 midik/sockets/Servidor.class
 midik/comparacion/GenerarJson.class
 midik/comparacion/GenerarJson$1.class
-midik/test/Main.class
 midik/comparacion/Score.class
 midik/tablaSimbolos/Visibilidad.class
 midik/frontend/VtnErrores.class

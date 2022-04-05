@@ -10,7 +10,7 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
     </properties>
-    
+
     <dependencies>
         <!-- https://mvnrepository.com/artifact/com.github.vbmacher/java-cup -->
         <dependency>
@@ -45,4 +45,20 @@
             </plugin>
         </plugins>
     </build>-->
+    <build>
+        <plugins>
+            <plugin>
+                <groupId> org.apache.maven.plugins </groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.0.2</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>midik/sockets/Servidor</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

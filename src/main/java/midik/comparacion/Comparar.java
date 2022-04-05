@@ -14,6 +14,7 @@ import midik.tablaSimbolos.Termino;
 
 public class Comparar {
 
+    private final String SEPARADOR = System.getProperty("file.separator");
     private final File directorioP1 = new File("Proyecto1");
     private final File directorioP2 = new File("Proyecto2");
     private final ArrayList<TablaSimbolos> tablasSimbolosP1 = new ArrayList<>();
