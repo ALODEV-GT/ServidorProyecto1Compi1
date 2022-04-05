@@ -8,10 +8,10 @@ import midik.tablaSimbolos.Roles;
 public class Score {
 
     //Grupos
-    private ArrayList<Repetido> clases = new ArrayList<>();
-    private ArrayList<Repetido> variables = new ArrayList<>();
-    private ArrayList<Repetido> metodos = new ArrayList<>();
-    private ArrayList<Repetido> comentarios = new ArrayList<>();
+    private final ArrayList<Repetido> clases = new ArrayList<>();
+    private final ArrayList<Repetido> variables = new ArrayList<>();
+    private final ArrayList<Repetido> metodos = new ArrayList<>();
+    private final ArrayList<Repetido> comentarios = new ArrayList<>();
 
     //Contadores de terminos de los proyectos
     private int contadorComentarios = 0;

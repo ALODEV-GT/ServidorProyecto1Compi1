@@ -51,8 +51,8 @@ public class Comparar {
         }
         if (this.repetidos.size() > 0) {
             this.score.setRepetidos(repetidos);
-            double score = this.score.calcularScore();
-            GenerarJson json = new GenerarJson(repetidos, score);
+            double scoreTotal = this.score.calcularScore();
+            GenerarJson json = new GenerarJson(repetidos, scoreTotal);
             out.writeBoolean(true);
             out.writeUTF(json.generar());
         } else {
@@ -222,7 +222,7 @@ public class Comparar {
 
         } catch (Exception ex) {
             this.errores = true;
-            taErrores.append("Algo grave ocurrio con el analizador sintactico");
+            taErrores.append("Algo grave ocurrio con el analizador sintactico\n");
         }
     }
 }

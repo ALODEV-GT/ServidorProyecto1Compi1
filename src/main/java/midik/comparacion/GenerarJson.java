@@ -5,11 +5,11 @@ import java.util.ArrayList;
 public class GenerarJson {
 
     private ArrayList<Repetido> repetidos = null;
-    private ArrayList<Repetido> clases = new ArrayList<>();
-    private ArrayList<Repetido> variables = new ArrayList<>();
-    private ArrayList<Repetido> metodos = new ArrayList<>();
-    private ArrayList<Repetido> comentarios = new ArrayList<>();
-    private double score;
+    private final ArrayList<Repetido> clases = new ArrayList<>();
+    private final ArrayList<Repetido> variables = new ArrayList<>();
+    private final ArrayList<Repetido> metodos = new ArrayList<>();
+    private final ArrayList<Repetido> comentarios = new ArrayList<>();
+    private final double score;
     private String json = "{\n";
 
     public GenerarJson(ArrayList<Repetido> repetidos, double score) {

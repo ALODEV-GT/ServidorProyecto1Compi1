@@ -1179,12 +1179,12 @@ public class parser extends java_cup.runtime.lr_parser {
 
     public void syntax_error(Symbol s){
         errores = true;
-        taErrores.append("Error sintactico: " + s.value.toString() + " Linea:" + s.right + " Columna:" + s.left + ". ");
+        taErrores.append("Error sintactico: " + s.value.toString() + " Archivo:" + nombreArchivo + " Linea:" + s.right + " Columna:" + s.left + ". ");
     }
 
     public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception {
         errores = true;
-        taErrores.append("No se pudo recuperar el analizador. Linea:" + s.right + " Columna:" + s.left + "\n");
+        taErrores.append("No se pudo recuperar el analizador. Archivo:" + nombreArchivo + " Linea:" + s.right + " Columna:" + s.left + "\n");
     }
 
 

@@ -36,7 +36,7 @@ public class Recibir {
             contenidoArchivo[j] = in.readByte();
         }
         String contenido = new String(contenidoArchivo);
-        FileWriter fw = new FileWriter(nombreDirectorio + "/" + nombreArchivo);
+        FileWriter fw = new FileWriter(nombreDirectorio + System.getProperty("file.separator") + nombreArchivo);
         fw.write(contenido);
         fw.close();
     }
