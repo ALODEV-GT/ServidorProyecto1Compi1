@@ -4,15 +4,18 @@ import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URISyntaxException;
 
 public class Recibir {
 
     private final DataInputStream in;
     private final String SEPARADOR = System.getProperty("file.separator");
-    private final String PATH_PROYECTO1 = "Proyecto1";
-    private final String PATH_PROYECTO2 = "Proyecto2";
+    private final String pathProyecto1;
+    private final String pathProyecto2;
 
     public Recibir(DataInputStream in) {
+        this.pathProyecto1 = getPathEjecucion() + SEPARADOR + "Proyecto1";
+        this.pathProyecto2 = getPathEjecucion() + SEPARADOR + "Proyecto2";
         this.in = in;
     }
 
@@ -23,11 +26,11 @@ public class Recibir {
         int cantidadArchivosP2 = this.in.readInt();
 
         for (int i = 0; i < cantidadArchivosP1; i++) {
-            recibirArchivo(PATH_PROYECTO1);
+            recibirArchivo(pathProyecto1);
         }
 
         for (int i = 0; i < cantidadArchivosP2; i++) {
-            recibirArchivo(PATH_PROYECTO2);
+            recibirArchivo(pathProyecto2);
         }
     }
 
@@ -45,8 +48,8 @@ public class Recibir {
     }
 
     private void crearDirectorios() {
-        File directorioP1 = new File(PATH_PROYECTO1);
-        File directorioP2 = new File(PATH_PROYECTO2);
+        File directorioP1 = new File(pathProyecto1);
+        File directorioP2 = new File(pathProyecto2);
         if (!directorioP1.exists()) {
             directorioP1.mkdir();
         }
@@ -55,18 +58,33 @@ public class Recibir {
         }
     }
 
+    public static String getPathEjecucion() {
+        File directorio = null;
+        try {
+            File jar = new File(midik.sockets.Servidor.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+            directorio = new File(jar.getParentFile().getPath());
+        } catch (URISyntaxException ex) {
+            ex.printStackTrace(System.out);
+        }
+        return directorio.getAbsolutePath();
+    }
+
     private void limpiarDirectorios() {
-        File directorioP1 = new File(PATH_PROYECTO1);
-        File directorioP2 = new File(PATH_PROYECTO2);
+        File directorioP1 = new File(pathProyecto1);
+        File directorioP2 = new File(pathProyecto2);
         File[] archivosP1 = directorioP1.listFiles();
         File[] archivosP2 = directorioP2.listFiles();
 
-        for (int i = 0; i < archivosP1.length; i++) {
-            archivosP1[i].delete();
+        if (archivosP1 != null) {
+            for (int i = 0; i < archivosP1.length; i++) {
+                archivosP1[i].delete();
+            }
         }
 
-        for (int i = 0; i < archivosP2.length; i++) {
-            archivosP2[i].delete();
+        if (archivosP2 != null) {
+            for (int i = 0; i < archivosP2.length; i++) {
+                archivosP2[i].delete();
+            }
         }
     }
 }

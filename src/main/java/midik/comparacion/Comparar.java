@@ -15,8 +15,8 @@ import midik.tablaSimbolos.Termino;
 public class Comparar {
 
     private final String SEPARADOR = System.getProperty("file.separator");
-    private final File directorioP1 = new File("Proyecto1");
-    private final File directorioP2 = new File("Proyecto2");
+    private final File directorioP1;
+    private final File directorioP2;
     private final ArrayList<TablaSimbolos> tablasSimbolosP1 = new ArrayList<>();
     private final ArrayList<TablaSimbolos> tablasSimbolosP2 = new ArrayList<>();
     private final javax.swing.JTextArea taErrores;
@@ -27,6 +27,8 @@ public class Comparar {
     private boolean contadoP2 = false;
 
     public Comparar(javax.swing.JTextArea taErrores, DataOutputStream out) {
+        directorioP1 = new File(midik.sockets.Recibir.getPathEjecucion() + SEPARADOR + "Proyecto1");
+        directorioP2 = new File(midik.sockets.Recibir.getPathEjecucion() + SEPARADOR + "Proyecto2");
         this.taErrores = taErrores;
         this.out = out;
     }
