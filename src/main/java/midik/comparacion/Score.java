@@ -126,7 +126,6 @@ public class Score {
     }
 
     private void contarRepitenciaMetodos() {
-        System.out.println("Metodos repetidos: " + this.metodos.size());
         ArrayList<Integer> revisados = new ArrayList<>();
         ArrayList<String> lugares;
 
